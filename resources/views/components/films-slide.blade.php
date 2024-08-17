@@ -1,9 +1,11 @@
-<div class="my-5">
-    <x-search-bar></x-search-bar>
+<div class="mt-5">
+    <div class="flex justify-center">
+        <x-search-bar></x-search-bar>
+    </div>
     <div class="flex flex-wrap justify-center lg:justify-center gap-5 gap-y-5 p-0 px-4 lg:px-10 m-0 list-none mt-4">
         @foreach ($films as $film)
             <a href="/films/{{ $film->slug }}" class="transition-transform duration-300 ease-in-out transform hover:scale-90 min-w-40 p-3 box-bordertext-white 
-                film flex flex-col justify-center items-center max-w-48 bg-gray-900 rounded-xl hover:bg-midBlue">
+                film flex flex-col justify-center items-center max-w-48 bg-gray-800 rounded-xl hover:bg-midBlue">
                 <div>
                     <img class="w-full" src={{ $film->cover_image_url }} alt={{ $film->title }}>
                 </div>
@@ -12,7 +14,7 @@
             </a>
         @endforeach
     </div>
-    <div class="my-5 mx-3">
+    <div class="my-4 mx-3">
         {{ $films->links() }}
     </div>
 </div>

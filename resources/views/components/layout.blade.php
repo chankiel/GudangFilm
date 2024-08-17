@@ -17,7 +17,9 @@
 
 <body class="text-white">
     <x-header :authed="$authed"></x-header>
-    {{ $slot }}
+    <main>
+        {{ $slot }}
+    </main>
 </body>
 
 </html>

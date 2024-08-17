@@ -17,5 +17,5 @@ Route::get('login',[PageController::class,'login'])->middleware([RedirectIfAuth:
 Route::post('/add-user',[UserController::class,'store']);
 
 Route::post('/login-be',[AuthController::class,'login']);
-
+Route::get('/logout-be',[AuthController::class,'logout']);
 Route::post('buy-film/{film}',[UserController::class,'buyFilm']);

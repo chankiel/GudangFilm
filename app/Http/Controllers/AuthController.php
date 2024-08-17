@@ -86,4 +86,19 @@ class AuthController extends Controller
         }
         return $res;
     }
+
+    public function logout(Request $request){
+        // Check if the cookie exists
+        if (!isset($_COOKIE['jwt_token'])) {
+            return redirect('/')->with('success', 'User not logged in!');
+        }
+
+        // Create a response to include the cookie deletion
+        $response = redirect('/')->with('success', 'User logged out!');
+
+        // Forget the cookie by setting it with an expiration date in the past
+        $response->withCookie(Cookie::forget('jwt_token'));
+
+        return $response;
+    }
 }

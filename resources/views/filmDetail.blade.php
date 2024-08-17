@@ -1,5 +1,5 @@
 <x-layout :authed="$authed">
-    <div id="main-content" class="flex items-center justify-center {{ session('success') ? 'blur-sm':'' }}" style="min-height: calc(100vh - 100px);">
+    <div id="main-content" class="flex items-center justify-center {{ session('success') ? 'blur':'' }}" style="min-height: calc(100vh - 100px);">
         <div class="w-3/4 lg:w-2/3 text-white" style="transform: translateY(-10%);">
             <div class="flex mb-3">
                 <img src="{{ asset($film->cover_image_url) }}" alt="">
@@ -30,13 +30,33 @@
     </div>
     @if(session('success'))
         <div id="succ-modal" class="fixed inset-0 flex items-center justify-center ">
-            <div class="bg-softBlue rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 p-6 relative">
+            <div class="bg-darkOcean rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 p-6 relative">
                 <span id="closeBtn" class="absolute top-2 right-2 text-gray-500 hover:text-black cursor-pointer text-xl">&times;</span>
-                Success!
-                <h2 class="text-2xl font-semibold mb-4">Modal Header</h2>
+                <h2 class="text-2xl font-semibold mb-4">Transaction Success!</h2>
                 <p>Film berhasil dibeli!</p>
             </div>
         </div>
     @endif
     <script src="{{ asset('js/filmDetail.js') }}"></script>
 </x-layout>
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+    const modal = document.getElementById('succ-modal');
+    const closeBtn = document.getElementById('closeBtn');
+    const main = document.getElementById('main-content');
+
+    if(modal){
+        closeBtn.onclick = ()=>{
+            modal.classList.add('hidden');
+            main.classList.remove('blur');
+        }
+
+        window.onclick = function(event){
+            if(event.target === modal){
+                modal.classList.add('hidden');
+                main.classList.remove('blur');
+            }
+        }
+    }
+})
+</script>

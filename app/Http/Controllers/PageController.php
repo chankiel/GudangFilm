@@ -11,17 +11,20 @@ use Illuminate\Support\Facades\DB;
 class PageController extends Controller
 {
     public function home(Request $request)
-    {
-        $authed = AuthController::check($request);
-        $query = $request->input('search');
-        $filmQuery = Film::query();
-        if($query){
-            $filmQuery->where('title','like',"%{$query}%")
-            ->orWhere('director','like',"%{$query}%");
-        }
-        $films = $filmQuery->paginate(16);
-        return view('home', ['films' => $films, 'authed' => $authed]);
+{
+    $authed = AuthController::check($request);
+    $query = $request->input('search');
+    $filmQuery = Film::query();
+
+    if ($query) {
+        $query = strtolower($query);
+        $filmQuery->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
+                  ->orWhereRaw('LOWER(director) LIKE ?', ["%{$query}%"]);
     }
+    $films = $filmQuery->paginate(16);
+    return view('home', ['films' => $films, 'authed' => $authed]);
+}
+
 
     public function filmDetail(Request $request, Film $film)
     {
@@ -41,9 +44,10 @@ class PageController extends Controller
         $authed = AuthController::check($request);
         $query = $request->input('search');
         $filmQuery = $authed->films();
-        if($query){
-            $filmQuery->where('title','like',"%{$query}%")
-            ->orWhere('director','like',"%{$query}%");
+        if ($query) {
+            $query = strtolower($query);
+            $filmQuery->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
+                      ->orWhereRaw('LOWER(director) LIKE ?', ["%{$query}%"]);
         }
         $films = $filmQuery->paginate(5);
         return view('myfilms', ['films' => $films, 'authed' => $authed]);
