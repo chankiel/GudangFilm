@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Helpers\JwtHelper;
 use App\Helpers\JSONHelper;
 use App\Http\Requests\StoreUserRequest;
+use App\Models\Film;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -36,14 +37,14 @@ class UserController extends Controller
 
         return JSONHelper::JSONResponse('success','User found',[
             'username'=>$credentials['usrnm'],
-            'token'=>$request->bearerToken(),
+            'token'=>$request->cookie('jwt_token'),
         ]);
     }
 
     public function store(StoreUserRequest $request){
-        print_r($request->all());
-        $user = User::create($request->all());
-        return response(null,200);
+        $data = $request->except('_token');
+        $user = User::create($data);
+        return redirect('/login')->with('success','User created');
     }
 
     public function show(string $id)
@@ -87,20 +88,38 @@ class UserController extends Controller
         $user = User::all()->find($id);
 
         if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found',
-                'data' => [],
-            ], 404);
+            return JSONHelper::JSONResponse('error','User not found',null,404);
         }
 
-        $response = response()->json([
-            'status' => 'success',
-            'message' => 'User berhasil dihapus',
-            'data' => $user,
-        ], 200);
+        $response = JSONHelper::JSONResponse('success','User berhasil dihapus',null,200);
 
         $user->delete();
         return $response;
     }
+
+    public function buyFilm(Request $request, $id){
+        $user = AuthController::check($request);
+
+        if ($user->films()->where('id', $id)->exists()) {
+            return redirect()->back()->with('error', 'You have already bought this film.');
+        }
+
+        $film = Film::find($id);
+
+        if (!$film) {
+            return redirect()->back()->with('error', 'Film not found.');
+        }
+
+        if ($user->balance < $film->price) {
+            return redirect()->back()->with('error', 'You don\'t have enough balance to buy this film.');
+        }
+
+        $user->balance -= $film->price;
+        $user->save();
+
+        $user->films()->attach($film->id);
+
+        return redirect()->back()->with('success', 'Film purchased successfully.');
+}
+
 }

@@ -2,32 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\JSONHelper;
-use App\Http\Requests\StoreFilmRequest;
+use App\Helpers\FileHelper;
 use App\Models\Film;
 use App\Models\Genre;
+use App\Helpers\JSONHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreFilmRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use PHPUnit\Framework\Constraint\FileExists;
 
 class FilmController extends Controller
 {
-
-    /**
-     * Delete film's asset (video / cover_image).
-     */
-    public function deleteFilmAsset($asset_url)
-    {
-        if (is_null($asset_url)) {
-            return;
-        }
-        $storage_path = storage_path('app/' . $asset_url);
-        if (!file_exists($storage_path)) {
-            return;
-        }
-        unlink($storage_path);
-    }
 
     /**
      * Prepare data for creating row with Eloquent Model.
@@ -47,13 +34,13 @@ class FilmController extends Controller
         if ($request->hasFile('video')) {
             $videoFile = $request->file('video');
             $videoFilename = $data['title'] . '.' . $videoFile->getClientOriginalExtension();
-            $data['video_url'] = $videoFile->storeAs('videos', $videoFilename);
+            $data['video_url'] = $videoFile->storeAs('videos', $videoFilename,'public');
         }
 
         if ($request->hasFile('cover_image')) {
             $imgFile = $request->file('cover_image');
             $imgFilename = $data['title'] . '.' . $imgFile->getClientOriginalExtension();
-            $data['cover_image_url'] = $imgFile->storeAs('cover_images', $imgFilename);
+            $data['cover_image_url'] = $imgFile->storeAs('cover_images', $imgFilename,'public');
         }
         return $data;
     }
@@ -81,14 +68,8 @@ class FilmController extends Controller
     public function store(StoreFilmRequest $request)
     {
         $data = $this->prepareData($request);
-
-        $film = Film::create($data);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Film berhasil ditambahkan',
-            'data' => $film,
-        ], 201);
+        Film::createFilm($data);
+        return JSONHelper::JSONResponse('success','Film berhasil ditambahkan',$data,201);
     }
 
     /**
@@ -99,18 +80,13 @@ class FilmController extends Controller
         $film = Film::find($id);
 
         if (!$film) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Film not found',
-                'data' => [],
-            ], 404);
+            return JSONHelper::JSONResponse('error','Film not found',[],404);
         }
 
-        return response()->json([
-            'status' => "success",
-            'message' => "Film found",
-            'data' => $film,
-        ], 200);
+        $genres = DB::table('film_genres')->where('film_id',$film->id)->value('genre');
+
+        return JSONHelper::JSONResponse("success","Film found",
+            [$film,'genres' => $genres],200);
     }
 
     /**
@@ -121,22 +97,14 @@ class FilmController extends Controller
         $film = Film::find($id);
 
         if (!$film) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Film not found',
-                'data' => [],
-            ], 404);
+            return JSONHelper::JSONResponse('error','Film not found',[],404);
         }
 
         $data = $this->prepareData($request);
 
         $film->update($data);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Film berhasil diupdate',
-            'data' => $film,
-        ], 200);
+        return JSONHelper::JSONResponse("success","Film berhasil diupdate",$film,200);
     }
 
     /**
@@ -147,21 +115,13 @@ class FilmController extends Controller
         $film = Film::all()->find($id);
 
         if (!$film) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Film not found',
-                'data' => [],
-            ], 404);
+            return JSONHelper::JSONResponse('error','Film not found',[],404);
         }
 
-        $this->deleteFilmAsset($film->video_url);
-        $this->deleteFilmAsset($film->cover_image_url);
+        FileHelper::deleteFilmAsset($film->video_url);
+        FileHelper::deleteFilmAsset($film->cover_image_url);
 
-        $response = response()->json([
-            'status' => 'success',
-            'message' => 'Film berhasil dihapus',
-            'data' => $film,
-        ], 200);
+        $response = JSONHelper::JSONResponse("success","Film berhasil dihapus",$film,200);
 
         $film->delete();
         return $response;

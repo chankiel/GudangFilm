@@ -1,10 +1,21 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FilmController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\RedirectIfAuth;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PageController::class,'home']);
 
+Route::get('/films/{film:slug}',[PageController::class,'filmDetail'])->middleware([AuthMiddleware::class]);
+Route::get('/myfilms',[PageController::class,'myfilms'])->middleware([AuthMiddleware::class]);
+Route::get('register',[PageController::class,'register'])->middleware([RedirectIfAuth::class]);
+Route::get('login',[PageController::class,'login'])->middleware([RedirectIfAuth::class]);
 
+Route::post('/add-user',[UserController::class,'store']);
+
+Route::post('/login-be',[AuthController::class,'login']);
+
+Route::post('buy-film/{film}',[UserController::class,'buyFilm']);

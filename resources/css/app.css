@@ -1,0 +1,17 @@
+@tailwind base;
+html,body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(3, 3, 68);
+    font-family: "montserrat",sans-serif;
+}
+
+.film {
+  flex: 1 1 calc(20% - 16px);
+}
+
+
+
+@tailwind components;
+@tailwind utilities;

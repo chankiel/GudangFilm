@@ -2,46 +2,88 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Helpers\JwtHelper;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
 
-    public function login(Request $request){
-        $credentials = $request->only('username','password');
-        $user = DB::table('users')->where('username',$credentials['username'])->first();
-        if(!$user || !Hash::check($credentials['password'],$user->password)){
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Credentials doesn\'t match',
-                'data' => null,
-            ]);
+    public static function check(Request $request=null,$isAdmin=false,$isAPI=false){
+        $jwt_token = null;
+        if(!$isAPI){
+            if(!isset($_COOKIE['jwt_token'])){
+                return null;
+            }
+
+            $jwt_token = $_COOKIE['jwt_token'];
+        }else{
+            if(!$request->bearerToken()){
+                return null;
+            }
+
+            $jwt_token = $request->bearerToken();
         }
 
+        $credentials = JwtHelper::decode($jwt_token);
+        if(!$credentials){
+            return null;
+        }
+
+        if(!isset($credentials['usrnm'])){
+            return null;
+        }
+
+        if($isAdmin && $credentials['usnrm']!=='admin'){
+            return null;
+        }
+
+        $user = User::where('username',$credentials['usrnm'])->first();
+        if(!$user){
+            return null;
+        }
+        return $user;
+    }
+
+    public function setJwt($token)
+    {
+        setcookie('jwt_token', $token, time() + (86400 * 30), '/');
+        
+    }
+
+    public function checkCred($credentials)
+    {
+        if (!isset($credentials['emailUsr'])) {
+            return ["status" => "emailUsr","msg"=>"Email / Username field is required!"];
+        }
+
+        if (!isset($credentials['password'])) {
+            return ["status"=>"password","msg"=>"Password field is required!"];
+        }
+
+        $user = DB::table('users')->where('username', $credentials['emailUsr'])
+            ->orWhere('email', $credentials['emailUsr'])->first();
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            return ["status"=>"creds","msg"=>'Credentials doesn\'t match'];
+        }
+        
         $token = JwtHelper::encode([
-            'usrnm' => $credentials['username'],
+            'usrnm' => $user->username,
             'pswrd' => $credentials['password'],
         ]);
+        return ["status"=>"true","msg"=>$token];
+    }
 
-        setcookie('jwt_token', $token, [
-            'expires' => time() + (86400*30),
-            'path' => '/',
-            'domain' => '', // Default to the current domain
-            'secure' => true, // Ensure the cookie is sent over HTTPS
-            'httponly' => true, // Make the cookie accessible only through HTTP
-            'samesite' => 'Strict', // Prevents the cookie from being sent with cross-site requests
-        ]);
+    public function login(Request $request)
+    {
+        $res = $this->checkCred($request->all());
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'login berhasil',
-            'data' => [
-                'username'=>$credentials['username'],
-                'token' => $token,
-            ],
-        ]);    
+        if ($res['status']) {
+            $this->setJwt($res['msg']);
+        }
+        return $res;
     }
 }

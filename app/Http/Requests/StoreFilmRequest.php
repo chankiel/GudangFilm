@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Controllers\AuthController;
 use App\Models\Film;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,11 +13,12 @@ class StoreFilmRequest extends FormRequest
      */
     public function authorize()
     {
-        $contentType = $this->header('Content-Type');
-        if (strpos($contentType, 'multipart/form-data') === false) {
-            return false;
+        $admin = AuthController::check($this,true,true);
+        if($admin){
+            return true;
         }
-        return true;
+
+        return false;
     }
 
     /**
@@ -26,7 +28,6 @@ class StoreFilmRequest extends FormRequest
      */
     public function rules(): array
     {   
-
         $videoConstraint = 'file|mimes:mp4|max:51200';
         if ($this->isMethod('post')) {
             $videoConstraint = $videoConstraint . '|required';
@@ -36,7 +37,7 @@ class StoreFilmRequest extends FormRequest
             'title' => 'required|string|unique:films,title',
             'description' => 'required|string',
             'director' => 'required|string',
-            'genres' => ['required', 'array'],
+            'genres' => ['required', 'array','distinct'],
             'genres.*' => ['required', 'in:' . implode(',', Film::genreList())],
             'release_year' => 'required|numeric',
             'price' => 'numeric',

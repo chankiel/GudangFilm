@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Helpers\JSONHelper;
 use Closure;
 use App\Helpers\JwtHelper;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,15 +21,14 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
-        $credentials = JwtHelper::decode($request->cookie('jwt_token'));
-        if($credentials['usrnm'] !== 'admin'){
-            return JSONHelper::JSONResponse('error','Only admin can access this',null);
+        if(!AuthController::check($request,true,true)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User\' unauthorized',
+                'data' => null,
+            ]);
         }
 
-        $user = DB::table('users')->where('username',$credentials['usrnm'])->first();
-        if(!Hash::check($credentials['pswrd'],$user->password)){
-            return JSONHelper::JSONResponse('error','Admin credentials doesn\' match',null);
-        }
         return $next($request);
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('films', function (Blueprint $table) {
             $table->id();
             $table->string('title')->unique();
+            $table->string('slug')->unique();
             $table->text('description');
             $table->string('director');
             $table->year('release_year');
@@ -26,9 +27,11 @@ return new class extends Migration
         });
 
         Schema::create('film_genres',function(Blueprint $table){
-            $table->unsignedBigInteger('film_id')->primary();
-            $table->enum('genre',Film::genreList())->primary();
-            $table->foreign('film_id')->references('id')->on('films'); 
+            $table->unsignedBigInteger('film_id');
+            $table->enum('genre',Film::genreList());
+            $table->primary(['film_id','genre']);
+            $table->foreign('film_id')->references('id')->on('films')
+            ->onDelete('cascade'); 
         });
     }
 

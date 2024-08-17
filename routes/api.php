@@ -9,14 +9,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\JwtMiddleware;
 
 Route::middleware([JwtMiddleware::class,AdminMiddleware::class])->group(function(){
-    Route::get('films',[FilmController::class,'index']);
-    Route::get('films/{id}',[FilmController::class,'show']);
-
-    Route::post('films',[FilmController::class,'store']);
-
-    Route::put('films/{id}',[FilmController::class,'update']);
-
-    Route::delete('films/{id}',[FilmController::class,'destroy']);
+    Route::apiResource('films',FilmController::class);
 
     Route::post('users/{id}/balance',[UserController::class,'addBalance']);
 
@@ -26,5 +19,4 @@ Route::middleware([JwtMiddleware::class,AdminMiddleware::class])->group(function
     Route::delete('users/{id}',[UserController::class,'destroy']);
 });
 
-Route::post('register',[UserController::class,'store']);
 Route::post('login',[AuthController::class,'login']);

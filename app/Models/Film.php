@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Film extends Model
@@ -18,6 +19,7 @@ class Film extends Model
         'duration',
         'video_url',
         'cover_image_url',
+        'slug',
     ];
 
     public static function genreList()
@@ -28,7 +30,7 @@ class Film extends Model
         'Drama',
         'Fantasy',
         'Horror',
-        'Sci-Fi',
+        'Science Fiction',
         'Romance',
         'Thriller',
         'Mystery',
@@ -42,6 +44,22 @@ class Film extends Model
         'Biographical',
         'Family',
         ];
+    }
+
+    public static function createFilm($data){
+        $genres = $data['genres'];
+        unset($data['genres']);
+        $film = Film::create($data);
+        foreach($genres as $genre){
+            DB::table('film_genres')->insert([
+                'film_id' => $film->id,
+                'genre' => $genre,
+            ]);
+        }
+    }
+
+    public function genres(){
+        return $this->hasMany(FilmGenre::class,'film_id');
     }
 
     public function users(): BelongsToMany
