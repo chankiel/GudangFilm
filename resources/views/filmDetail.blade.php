@@ -1,8 +1,10 @@
 <x-layout :authed="$authed">
-    <div id="main-content" class="flex items-center justify-center {{ session('success') ? 'blur':'' }}" style="min-height: calc(100vh - 100px);">
-        <div class="w-3/4 pb-5 text-white">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <div id="main-content" class="flex items-center justify-center {{ session('success') ? 'blur':'' }} relative" style="min-height: calc(100vh - 100px);">
+        <a href="{{ url()->previous() }}"><span class="material-symbols-outlined absolute left-16 top-16 bg-darkOcean hover:bg-blue-300 hover:text-darkOcean p-3 rounded-xl transition-colors ease-in-out duration-300">arrow_back</span></a>
+        <div class="w-3/4 p-5 text-white">
             @if ($bought)
-                <video class="w-full lg:mt-5 mb-5 mx-auto" controls>
+                <video class="w-full mb-5 mx-auto" controls>
                     <source src="{{ $film->video_url }}" type="video/mp4">
                 </video>
             @endif
