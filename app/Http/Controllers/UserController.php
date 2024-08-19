@@ -43,7 +43,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error','User not found',null);
+            return new UserCollection('error','User not found',collect());
         }
 
         return new UserCollection('success','User found',collect([$user]));
@@ -53,7 +53,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error','User not found',null);
+            return new UserCollection('error','User not found',collect());
         }
 
         $increment = (int)$request->input('increment');
@@ -80,7 +80,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error','User not found',null);
+            return new UserCollection('error','User not found',collect());
         }
 
         $response = new UserCollection('success','User berhasil dihapus',collect([$user]));
