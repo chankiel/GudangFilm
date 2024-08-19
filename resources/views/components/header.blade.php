@@ -7,9 +7,9 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 @if (!$logReg)
 
-    <header class="bg-darkOcean shadow text-softWhite py-4 relative">
+    <header class="bg-darkOcean shadow text-softWhite py-1 relative">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="/" class="text-xl font-semibold">GudangFilm</a>
+            <img src="{{ asset('gudangfilm-logo.png') }}" alt="gudangfilm-logo" class="w-[100px]">
             <nav class="hidden md:flex items-center space-x-6">
                 <a href="/" class="{{ request()->is('/')===true ? 'font-bold border-b-2':'hover:text-gray-500' }}">Home</a>
                 <a href="/myfilms" class="{{ request()->is('myfilms')===true ?'font-bold border-b-2':'hover:text-gray-500' }}">My Films</a>
@@ -26,7 +26,7 @@
                     </a>
                 @else
                     <a href="/login"
-                        class="bg- px-3 rounded-2xl bg-softBlue border-2 border-softBlue hover:bg-darkOcean">Log In</a>
+                        class="bg- px-3 rounded-2xl bg-softBlue border-2 border-softBlue hover:bg-darkOcean py-2">Log In</a>
                 @endif
             </nav>
             <button id="mobile-menu"
