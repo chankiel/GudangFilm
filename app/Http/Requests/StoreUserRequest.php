@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 
 class StoreUserRequest extends FormRequest
 {
@@ -38,4 +40,18 @@ class StoreUserRequest extends FormRequest
             ]
         ]; 
     }
+
+    public function messages(): array{
+        return [
+            'password.required' => 'The password field is required.',
+            'password.string' => 'The password must be a string.',
+            'password.min' => 'The password must be at least 8 characters.',
+            'password.regex' => 'The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
+            'password.regex:/[a-z]/' => 'The password must contain at least one lowercase letter.',
+            'password.regex:/[A-Z]/' => 'The password must contain at least one uppercase letter.',
+            'password.regex:/[0-9]/' => 'The password must contain at least one digit.',
+            'password.regex:/[@$!%*?&]/' => 'The password must contain at least one special character (@, $, !, %, *, ?, &).',
+        ];
+    }
+
 }

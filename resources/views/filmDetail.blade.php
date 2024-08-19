@@ -1,8 +1,13 @@
 <x-layout :authed="$authed">
     <div id="main-content" class="flex items-center justify-center {{ session('success') ? 'blur':'' }}" style="min-height: calc(100vh - 100px);">
-        <div class="w-3/4 lg:w-2/3 text-white" style="transform: translateY(-10%);">
+        <div class="w-3/4 pb-5 text-white">
+            @if ($bought)
+                <video class="w-full lg:mt-5 mb-5 mx-auto" controls>
+                    <source src="{{ $film->video_url }}" type="video/mp4">
+                </video>
+            @endif
             <div class="flex mb-3">
-                <img src="{{ asset($film->cover_image_url) }}" alt="">
+                <img src="{{ $film->cover_image_url }}" alt="" class="">
                 <div class="ml-4">
                     <h1 class="text-3xl font-semibold">{{ $film->title }}</h1>
                     <h3 class="text-sm mb-3 mt-2">{{ implode(' | ', $genres) }} - {{ $formattedDuration }}</h3>
@@ -16,16 +21,16 @@
                             <div class="text-red-500 w-full error h-5" id="error-user">{{ session('error') }}</div>
                         @endif
                     @else
-                        <button class="rounded-2xl w-full p-4 border-4 font-bold bg-blue-300 text-darkOcean">Nonton Film</button>
+
                     @endif
                 </div>
             </div>
             <h3 class="text-gray-300 text-sm">Description</h3>
-            <p>{{ $film->description }}</p>
+            <p class="text-sm md:text-base">{{ $film->description }}</p>
             <h3 class="mt-3 text-sm text-gray-300">Director</h3>
             <p>{{ $film->director }}</p>
             <h3 class="mt-3 text-sm text-gray-300">Release Year</h3>
-            <p>{{ $film->release_year }}</p>
+            <p >{{ $film->release_year }}</p>
         </div>
     </div>
     @if(session('success'))
@@ -37,7 +42,6 @@
             </div>
         </div>
     @endif
-    <script src="{{ asset('js/filmDetail.js') }}"></script>
 </x-layout>
 <script>
     document.addEventListener('DOMContentLoaded',()=>{

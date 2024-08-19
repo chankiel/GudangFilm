@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Helpers\JwtHelper;
+use App\Helpers\JSONHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +38,7 @@ class AuthController extends Controller
             return null;
         }
 
-        if($isAdmin && $credentials['usnrm']!=='admin'){
+        if($isAdmin && $credentials['usrnm']!=='admin'){
             return null;
         }
 
@@ -54,18 +55,25 @@ class AuthController extends Controller
         
     }
 
-    public function checkCred($credentials)
+    public function checkCred($credentials,$isAPI)
     {
-        if (!isset($credentials['emailUsr'])) {
-            return ["status" => "emailUsr","msg"=>"Email / Username field is required!"];
-        }
-
         if (!isset($credentials['password'])) {
             return ["status"=>"password","msg"=>"Password field is required!"];
         }
 
-        $user = DB::table('users')->where('username', $credentials['emailUsr'])
+        if(!$isAPI){
+            if (!isset($credentials['emailUsr'])) {
+                return ["status" => "emailUsr","msg"=>"Email / Username field is required!"];
+            }
+            $user = DB::table('users')->where('username', $credentials['emailUsr'])
             ->orWhere('email', $credentials['emailUsr'])->first();
+        }else{
+            if (!isset($credentials['username'])) {
+                return ["status" => "username","msg"=>"Username field is required!"];
+            }
+            $user = DB::table('users')->where('username', $credentials['username'])->first();
+        }
+        
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return ["status"=>"creds","msg"=>'Credentials doesn\'t match'];
         }
@@ -79,26 +87,58 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $res = $this->checkCred($request->all());
+        $isAPI = $request->route()->uri()==='api/login';
+        $res = $this->checkCred($request->all(),$isAPI);
 
-        if ($res['status']) {
-            $this->setJwt($res['msg']);
+        if(!$isAPI){
+            if ($res['status'] === "true") {
+                $this->setJwt($res['msg']);
+            }
+            return $res;
         }
-        return $res;
+
+        $status = "error";
+        $message = $res['msg'];
+        $data = null;
+
+        if($res['status']==="true"){
+            $status = "success";
+            $message = "Login Successful";
+            $data = [
+                'username' => $request->only('username')['username'],
+                'token' => $res['msg'],
+            ];
+        }
+
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => $data,
+        ]);
     }
 
     public function logout(Request $request){
-        // Check if the cookie exists
         if (!isset($_COOKIE['jwt_token'])) {
             return redirect('/')->with('success', 'User not logged in!');
         }
 
-        // Create a response to include the cookie deletion
         $response = redirect('/')->with('success', 'User logged out!');
 
-        // Forget the cookie by setting it with an expiration date in the past
         $response->withCookie(Cookie::forget('jwt_token'));
 
         return $response;
+    }
+
+    public function self(Request $request){
+        $user = $this::check($request,false,true);
+
+        if(!$user){
+            return JSONHelper::JSONResponse('error','Credentials doesn\' match',null);
+        }
+
+        return JSONHelper::JSONResponse('success','User found',[
+            'username'=>$user->username,
+            'token'=>$request->bearerToken(),
+        ]);
     }
 }

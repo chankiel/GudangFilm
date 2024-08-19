@@ -56,6 +56,7 @@ class Film extends Model
                 'genre' => $genre,
             ]);
         }
+        return $film;
     }
 
     public function genres(){

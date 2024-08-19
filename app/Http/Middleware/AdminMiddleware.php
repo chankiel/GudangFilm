@@ -21,6 +21,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
+
         if(!AuthController::check($request,true,true)){
             return response()->json([
                 'status' => 'error',

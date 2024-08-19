@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\AuthController;
-use App\Models\Film;
+use App\Rules\ValidGenre;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreFilmRequest extends FormRequest
 {
@@ -13,12 +14,11 @@ class StoreFilmRequest extends FormRequest
      */
     public function authorize()
     {
-        $admin = AuthController::check($this,true,true);
-        if($admin){
-            return true;
+        $contentType = $this->header('Content-Type');
+        if (strpos($contentType, 'multipart/form-data') === false) {
+            return false;
         }
-
-        return false;
+        return true;
     }
 
     /**
@@ -37,13 +37,27 @@ class StoreFilmRequest extends FormRequest
             'title' => 'required|string|unique:films,title',
             'description' => 'required|string',
             'director' => 'required|string',
-            'genres' => ['required', 'array','distinct'],
-            'genres.*' => ['required', 'in:' . implode(',', Film::genreList())],
+            'genres' => ['required', 'array','distinct',new ValidGenre()],
             'release_year' => 'required|numeric',
-            'price' => 'numeric',
-            'duration' => 'numeric',
+            'price' => 'required|numeric',
+            'duration' => 'required|numeric',
             'video' => $videoConstraint,
             'cover_image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ];
+    }
+
+    public function messages(): array
+    {
+        return[
+            'genres.*.in' => 'One or more input genres are invalid',
+        ];
+    }
+
+    protected function failedValidation(Validator $validator){
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'message' => $validator->errors(),
+            'data' => null,
+        ], 422));
     }
 }

@@ -1,8 +1,8 @@
-<div class="mt-5">
+<div class="mt-5 w-5/6 mx-auto">
     <div class="flex justify-center">
         <x-search-bar></x-search-bar>
     </div>
-    <div class="flex flex-wrap justify-center lg:justify-center gap-5 gap-y-5 p-0 px-4 lg:px-10 m-0 list-none mt-4">
+    <div class="flex flex-wrap justify-center lg:justify-center gap-5 gap-y-5 p-0 m-0 list-none mt-4">
         @foreach ($films as $film)
             <a href="/films/{{ $film->slug }}" class="transition-transform duration-300 ease-in-out transform hover:scale-90 min-w-40 p-3 box-bordertext-white 
                 film flex flex-col justify-center items-center max-w-48 bg-gray-800 rounded-xl hover:bg-midBlue">

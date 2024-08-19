@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Film;
 use App\Models\User;
 use App\Helpers\JwtHelper;
 use App\Helpers\JSONHelper;
-use App\Http\Requests\StoreUserRequest;
-use App\Models\Film;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserCollection;
+use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
@@ -18,27 +19,17 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $userQuery = User::query();
         $str = $request->query('q');
-        $users = DB::table('users')
-            ->where('username', $str)
-            ->get();
-        if(empty($users)){
-            return JSONHelper::JSONResponse('error','User not found',[]);
+        if($str){
+            $userQuery->where('username', $str);
         }
-        return JSONHelper::JSONResponse('success','User(s) found',$users);
-    }
-
-    public function self(Request $request){
-        $credentials = JwtHelper::decode($request->cookie('jwt_token'));
-        $user = DB::table('users')->where('username',$credentials['usrnm'])->first();
-        if(!$user || !Hash::check($credentials['pswrd'],$user->password)){
-            return JSONHelper::JSONResponse('error','Credentials doesn\' match',null);
+        $users = $userQuery->get();
+        
+        if($users->isEmpty()){
+            return new UserCollection('error','User not found',$users);
         }
-
-        return JSONHelper::JSONResponse('success','User found',[
-            'username'=>$credentials['usrnm'],
-            'token'=>$request->cookie('jwt_token'),
-        ]);
+        return new UserCollection('success','User(s) found',$users);
     }
 
     public function store(StoreUserRequest $request){
@@ -52,32 +43,33 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return JSONHelper::JSONResponse('error','User not found',null,404);
+            return new UserCollection('error','User not found',null);
         }
 
-        return JSONHelper::JSONResponse('success','User found',$user);
+        return new UserCollection('success','User found',collect([$user]));
     }
 
     public function addBalance(Request $request,string $id){
         $user = User::find($id);
 
         if (!$user) {
-            return JSONHelper::JSONResponse('error','User not found',null,404);
+            return new UserCollection('error','User not found',null);
         }
 
         $increment = (int)$request->input('increment');
         if(!is_numeric($increment)){
-            return JSONHelper::JSONResponse('error','Increment must be numeric',[]);
+            return new UserCollection('error','Increment must be numeric',collect([$user]));
         }
+
         $increment = (int)$increment;
-        if($increment<0){
-            return JSONHelper::JSONResponse('error','Increment must be greater equal than 0',[]);
-        }
+        // if($increment<0){
+        //     return JSONHelper::JSONResponse('error','Increment must be greater equal than 0',[]);
+        // }
 
         $user->balance += $increment;
         $user->save();
         
-        return JSONHelper::JSONResponse('success','User\'s balance telah ditambah',$user); 
+        return new UserCollection('success','User\'s balance incremented successfully',collect([$user])); 
     }
 
     /**
@@ -85,13 +77,13 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = User::all()->find($id);
+        $user = User::find($id);
 
         if (!$user) {
-            return JSONHelper::JSONResponse('error','User not found',null,404);
+            return new UserCollection('error','User not found',null);
         }
 
-        $response = JSONHelper::JSONResponse('success','User berhasil dihapus',null,200);
+        $response = new UserCollection('success','User berhasil dihapus',collect([$user]));
 
         $user->delete();
         return $response;
