@@ -50,7 +50,7 @@ class FilmSeeder extends Seeder
                     $i++;
                     continue;
                 }
-                if ($i == 13) {
+                if ($i == 31) {
                     break;
                 }
                 $slug = FileHelper::cleanFileName($data[17]);
@@ -58,7 +58,6 @@ class FilmSeeder extends Seeder
 
                 $runtime = $data[13];
                 $genres = array_column(json_decode($data[1], true), 'name');
-                print_r($genres);
                 $desc = $data[7];
                 $date = $data[11];
 
@@ -72,7 +71,7 @@ class FilmSeeder extends Seeder
                     'genres' => $genres,
                     'duration' => ((int)$runtime) * 60,
                     'video_url' => Storage::url('videos/' . $slug . '.mp4'),
-                    'cover_image_url' => Storage::url('cover_images/' . $slug . '.jpg'),
+                'cover_image_url' => Storage::url('cover_images/'. $slug . '.jpg'),
                 ]);
 
 
