@@ -13,17 +13,18 @@
             <nav class="hidden md:flex items-center space-x-6">
                 <a href="/" class="{{ request()->is('/')===true ? 'font-bold border-b-2':'hover:text-gray-500' }}">Home</a>
                 <a href="/myfilms" class="{{ request()->is('myfilms')===true ?'font-bold border-b-2':'hover:text-gray-500' }}">My Films</a>
+                <a href="/wishlist" class="{{ request()->is('wishlist')===true ?'font-bold border-b-2':'hover:text-gray-500' }}">Wishlist</a>
                 @if ($authed)
                     <div>Rp. {{ number_format($authed->balance, 0, '', '.') }}</div>
-                    <a href="#" class="relative group bg-darkOcean text-white px-4 rounded"><span
+                    <div class="relative group bg-darkOcean text-white px-4 rounded cursor-pointer"><span
                             class="material-symbols-outlined">account_circle</span>
                         <div
-                            class="absolute left-0 top-full w-24 bg-white border border-gray-300 shadow-lg rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <form class="p-3 text-darkOcean font-semibold" action="/logout-be">
+                            class="absolute left-0 top-full bg-white border border-gray-300 shadow-lg rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <form class="text-darkOcean font-semibold" action="/logout-be">
                                 <button type="submit">Logout</button>
                             </form>
                         </div>
-                    </a>
+                    </div>
                 @else
                     <a href="/login"
                         class="bg- px-3 rounded-2xl bg-softBlue border-2 border-softBlue hover:bg-darkOcean py-2">Log In</a>

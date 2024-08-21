@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Film extends Model
 {
@@ -65,6 +66,28 @@ class Film extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class,'film_user');
+    }
+
+    public function wishers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'wishlist');
+    }
+
+    public function ratings(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'ratings')
+        ->withPivot('rating');
+    }
+
+    public function updateRatingInfo(){
+        $this->avg_rating = $this->ratings()->avg('ratings.rating');
+        $this->count_rating = $this->ratings()->count();
+        $this->save();
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }

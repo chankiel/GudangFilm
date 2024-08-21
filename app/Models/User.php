@@ -47,8 +47,25 @@ class User extends Authenticatable
         ];
     }
 
-    public function films(): BelongsToMany
+    public function bought(): BelongsToMany
     {
-        return $this->belongsToMany(Film::class);
+        return $this->belongsToMany(Film::class,'film_user');
+    }
+
+    public function wishlist(): BelongsToMany
+    {
+        return $this->belongsToMany(Film::class,'wishlist');
+    }
+
+    public function rated(): BelongsToMany
+    {
+        return $this->belongsToMany(Film::class,'ratings')
+        ->withPivot('rating');
+    }
+
+    public function commented(): BelongsToMany
+    {
+        return $this->belongsToMany(Film::class,'comments')
+        ->withPivot('comment');
     }
 }

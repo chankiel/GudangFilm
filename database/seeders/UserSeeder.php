@@ -29,9 +29,14 @@ class UserSeeder extends Seeder
 
         $filmsPerUser = 4;
         foreach($users as $user){
-            $userFilms = $films->random($filmsPerUser);
-            foreach($userFilms as $film){
-                $user->films()->attach($film->id);
+            $filmsBought = $films->random($filmsPerUser);
+            foreach($filmsBought as $film){
+                $user->bought()->attach($film->id);
+            }
+
+            $filmsWished = $films->random($filmsPerUser);
+            foreach($filmsBought as $film){
+                $user->wishlist()->attach($film->id);
             }
         }
     }

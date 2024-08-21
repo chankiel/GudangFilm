@@ -17,6 +17,7 @@ export default {
         lightSand: '#F9DBBA',
         softBlue: '#5B99C2',
         midBlue: '#1A4870',
+        bgBlue: "#030344",
       },
     },
   },

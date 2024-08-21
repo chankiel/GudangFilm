@@ -1,7 +1,4 @@
-<div class="mt-5 w-5/6 mx-auto">
-    <div class="flex justify-center">
-        <x-search-bar></x-search-bar>
-    </div>
+<div class="lg:px-40 px-24 mx-auto w-full">
     <div class="flex flex-wrap justify-center lg:justify-center gap-5 gap-y-5 p-0 m-0 list-none mt-4">
         @foreach ($films as $film)
             <a href="/films/{{ $film->slug }}" class="transition-transform duration-300 ease-in-out transform hover:scale-90 min-w-40 p-3 box-bordertext-white 
@@ -13,8 +10,5 @@
                 <h4 class="text-xs text-gray-400">{{ $film->release_year }}</h4>
             </a>
         @endforeach
-    </div>
-    <div class="my-4 mx-3">
-        {{ $films->links() }}
     </div>
 </div>

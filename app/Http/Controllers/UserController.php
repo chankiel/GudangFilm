@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\UserCollection;
 use App\Http\Requests\StoreUserRequest;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -21,21 +22,22 @@ class UserController extends Controller
     {
         $userQuery = User::query();
         $str = $request->query('q');
-        if($str){
+        if ($str) {
             $userQuery->where('username', $str);
         }
         $users = $userQuery->get();
-        
-        if($users->isEmpty()){
-            return new UserCollection('error','User not found',$users);
+
+        if ($users->isEmpty()) {
+            return new UserCollection('error', 'User not found', $users);
         }
-        return new UserCollection('success','User(s) found',$users);
+        return new UserCollection('success', 'User(s) found', $users);
     }
 
-    public function store(StoreUserRequest $request){
+    public function store(StoreUserRequest $request)
+    {
         $data = $request->except('_token');
         $user = User::create($data);
-        return redirect('/login')->with('success','User created');
+        return redirect('/login')->with('success', 'User created');
     }
 
     public function show(string $id)
@@ -43,22 +45,23 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error','User not found',collect());
+            return new UserCollection('error', 'User not found', collect());
         }
 
-        return new UserCollection('success','User found',collect([$user]));
+        return new UserCollection('success', 'User found', collect([$user]));
     }
 
-    public function addBalance(Request $request,string $id){
+    public function addBalance(Request $request, string $id)
+    {
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error','User not found',collect());
+            return new UserCollection('error', 'User not found', collect());
         }
 
         $increment = (int)$request->input('increment');
-        if(!is_numeric($increment)){
-            return new UserCollection('error','Increment must be numeric',collect([$user]));
+        if (!is_numeric($increment)) {
+            return new UserCollection('error', 'Increment must be numeric', collect([$user]));
         }
 
         $increment = (int)$increment;
@@ -68,8 +71,8 @@ class UserController extends Controller
 
         $user->balance += $increment;
         $user->save();
-        
-        return new UserCollection('success','User\'s balance incremented successfully',collect([$user])); 
+
+        return new UserCollection('success', 'User\'s balance incremented successfully', collect([$user]));
     }
 
     /**
@@ -80,26 +83,26 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error','User not found',collect());
+            return new UserCollection('error', 'User not found', collect());
         }
 
-        $response = new UserCollection('success','User berhasil dihapus',collect([$user]));
+        $response = new UserCollection('success', 'User berhasil dihapus', collect([$user]));
 
         $user->delete();
         return $response;
     }
 
-    public function buyFilm(Request $request, $id){
+    public function buyFilm(Request $request, $id)
+    {
         $user = AuthController::check($request);
 
-        if ($user->films()->where('id', $id)->exists()) {
-            return redirect()->back()->with('error', 'You have already bought this film.');
-        }
-
         $film = Film::find($id);
-
         if (!$film) {
             return redirect()->back()->with('error', 'Film not found.');
+        }
+
+        if ($user->bought()->where('id', $id)->exists()) {
+            return redirect()->back()->with('error', 'You have already bought this film.');
         }
 
         if ($user->balance < $film->price) {
@@ -109,9 +112,85 @@ class UserController extends Controller
         $user->balance -= $film->price;
         $user->save();
 
-        $user->films()->attach($film->id);
+        $user->bought()->attach($film->id);
 
         return redirect()->back()->with('success', 'Film purchased successfully.');
-}
+    }
 
+    public function wishFilm(Request $request, $id)
+    {
+        $user = AuthController::check($request);
+
+        $film = Film::find($id);
+
+        if (!$film) {
+            return redirect()->back()->with('error', 'Film not found.');
+        }
+
+        if ($user->wishlist()->where('id', $id)->exists()) {
+            return redirect()->back()->with('error', 'You have already bought this film.');
+        }
+
+
+        $user->wishlist()->attach($film->id);
+
+        return redirect()->back()->with('success', 'Film added to your wishlist!');
+    }
+
+    public function unwishFilm(Request $request, $id)
+    {
+        $user = AuthController::check($request);
+
+        $film = Film::find($id);
+
+        if (!$film) {
+            return redirect()->back()->with('error', 'Film not found.');
+        }
+
+        if (!$user->wishlist()->where('id', $id)->exists()) {
+            return redirect()->back()->with('error', 'You haven\'t bought this film.');
+        }
+
+
+        $user->wishlist()->detach($film->id);
+
+        return redirect()->back()->with('success', 'Film removed from your wishlist!');
+    }
+
+    public function rateFilm(Request $request, Film $film, $rating)
+    {
+        $user = AuthController::check($request);
+
+        if (!$film) {
+            return redirect()->back()->with('error', 'Film not found.');
+        }
+
+        $user->rated()->syncWithoutDetaching([
+            $film->id => ['rating' => $rating]
+        ]);
+
+        $film->updateRatingInfo();
+
+        return redirect()->back();
+    }
+
+    public function commentFilm(Request $request, Film $film)
+    {
+        $user = AuthController::check($request);
+
+        if (!$film) {
+            return redirect()->back()->with('error', 'Film not found.');
+        }
+
+        $now = Carbon::now();
+        $user->commented()->attach([
+            $film->id => [
+                'comment' => $request->input('comment'),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]
+        ]);
+
+        return redirect()->back();
+    }
 }

@@ -23,6 +23,8 @@ return new class extends Migration
             $table->integer('duration');
             $table->string('video_url')->nullable();
             $table->string('cover_image_url')->nullable();
+            $table->float('avg_rating')->default(0);
+            $table->float('count_rating')->default(0);
             $table->timestamps();
         });
 
