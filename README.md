@@ -15,6 +15,7 @@ The web app is equipped with an authentication feature that uses token-based aut
 - <a href="#how-to-run">How To Run</a><br/>
 - <a href="#design-pattern">Design Patterns</a><br/>
 - <a href="#endpoints">Endpoints</a><br/>
+- <a href="#bonus">Bonus</a><br/>
 - <a href="#author">Author</a><br/>
 
 <h2 id="tech-stack">Tech Stack</h2>
@@ -77,6 +78,7 @@ docker-compose exec app npm run dev
 
 <hr>
 2. <b>With Artisan and npm</b>  
+
 - Clone this repository
 ```
 git clone https://github.com/chankiel/Tucil3_13522029
@@ -177,6 +179,46 @@ Pola MVC adalah pola struktural, yang mengorganisir aplikasi menjadi tiga kompon
    - GET /users/:id
    - POST /users/:id/balance
    - DELETE /users/:id
+
+<h2 id="bonus">Bonus</h2>
+
+- B06 - Responsive Layout
+- B08 - SOLID  
+   Project ini menggunakan konsep MVC (Model-View-Controller) sebagai separation of concern dan agar memenuhi prinsip SOLID. Pembuatan class lain pada projek ini juga dibuat agar memenuhi prinsip-prinsip SOLID. Berikut adalah rincian class-class yang dibuat pada projek ini.
+   1. Helper  
+      Helper Class adalah class yang berisi metode-metode pembantu yang dibutuhkan pada class-class lain
+   2. Controlers  
+      Class Controlers bertanggung jawab untuk menerima request, memproses request tersebut dengan bantuan Model ataupun kelas lain, dan mengembalikan response yang sesuai  
+   3. Middleware  
+      Class Middleware bertanggung jawab sebagai 'filter' untuk request sebelum mencapai logic dari aplikasi. Disini dilakukan penyaringan request berdasarkan Authentication dan Authorization dari pengirim request dan request itu sendiri.
+   4. Request
+      Class Request berfungsi untuk melakukan penyaringan request setelah melalui middleware. Penyaringan disini bersifat spesifik terhadap resource yang ingin dilakukan operasi, seperti rules terhadap request body, dll.
+   5. Resources
+      Class Resources berfungsi untuk mengatur bentuk response JSON yang dikembalikan oleh API  
+   6. Models
+      Class Models mewakili entity atau row pada table database. Class Models berisi definisi dari suatu model dan business logic dari model tersebut.  
+   7. Rules
+      Class Rules berisi rule spesifik terhadap suatu attribut request yang kemudian akan digunakan pada Class Request. Penggunaan class ini agar dapat lebih leluasa dan fleksibel terhadap pemeriksaan attribut dan request dan pesan error yang dikembalikan
+   8. Migrations
+      Class Migrations berisi definisi tabel pada database, yang kemudian dijalankan untuk membangun definisi tersebut pada database.
+   9. Factories
+      Class Factory digunakan untuk membentuk suatu instance pada Model (umumnya instance dummy untuk seeding), yang dimana pada class ini dapat didefinisikan tiap-tiap attribut user yang akan dibentuk. Umumnya class ini digunakan pada Seeder.
+   10. Seeder
+      Class Seeder digunakan untuk melakukan operasi seeding terhadap database. Class ini berisi deretan instruksi seeding yang umumnya berupa aplikasi dari factory yang didefinisikan terhadap model tersebut.
+   11. Views
+      Views merupakan komponen projek yang bertanggung jawab terhadap tampilan frontend dari web app. Pada laravel, bentuk dari Views ini merupakan blade templating engine.
+   12. Routes
+      Routes merupakan komponen projek yang berfungsi untuk menerima request dari pengguna. Request yang diterima ini kemudian dihantarkan kepada Controller yang bersangkutan.
+
+- B10 - Fitur Tambahan
+    - Fitur Rating + Review
+       Pada Film Details Page, terdapat fitur untuk memberikan rating, misal bintang 1-5. Selain rating, terdapat juga fitur review atau menambahkan komentar terkait film tersebut. Pengguna tentu dapat melihat rating dan review dari pengguna lainnya.
+    - Wishlist  
+       Pada Film Details Page, tambahkan fitur Wishlist yang memungkinkan pengguna untuk menambahkan film yang mereka minati ke dalam daftar Wishlist mereka. Pengguna dapat melihat dan mengelola daftar Wishlist mereka pada halaman terpisah. Fitur ini dapat membantu pengguna untuk menyimpan film yang ingin mereka beli atau tonton nanti.  
+
+ - B11 - Bucket  
+   Projek ini menggunakan Amazon S3 Bucket sebagai cloud storage untuk penyimpanan cover image dan video dari film.
+
 
 <h2 id="author">Author</h2>
 <pre>
