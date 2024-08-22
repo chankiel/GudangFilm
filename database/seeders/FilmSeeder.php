@@ -81,7 +81,7 @@ class FilmSeeder extends Seeder
             fclose($open);
         }
 
-        $this->uploadAsset('videos',$slugList,'.mp4');
-        $this->uploadAsset('cover_images',$slugList,'.jpg');
+        // $this->uploadAsset('videos',$slugList,'.mp4');
+        // $this->uploadAsset('cover_images',$slugList,'.jpg');
     }
 }
