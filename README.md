@@ -1,66 +1,181 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
+<h1 align="center">Gudang Film Web App</h1>
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img alt="Coding" width="400" src="public/gudangfilm-logo.png">
 </p>
+<h2 id="description">Description </h2>
 
-## About Laravel
+Gudang Film is a web app where users can purchase and watch their favorite films. The app offers a list of films available for purchase, with a variety of genres, including Action, Horror, Romance, and many others. This app also serves as a streaming platform, allowing users to watch films immediately after purchasing them.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The web app is equipped with an authentication feature that uses token-based authentication with JWT tokens. It also includes a WishList feature for users who want to bookmark a film for future purchase or viewing, a rating feature so users can gauge the quality of a film based on public opinion, and a commenting feature that enables users to discuss films with each other.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<h2 id="table-of-contents">Table of Contents</h2>
+- <a href="#description">Description</a><br/>
+- <a href="#table-of-contents">Table of Contents</a><br/>
+- <a href="#tech-stack">Tech Stack</a><br/>
+- <a href="#how-to-run">How To Run</a><br/>
+- <a href="#design-pattern">Design Patterns</a><br/>
+- <a href="#endpoints">Endpoints</a><br/>
+- <a href="#author">Author</a><br/>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+<h2 id="tech-stack">Tech Stack</h2>
 
-## Learning Laravel
+- Laravel Framework 11.20.0
+- Vite @5.4.0
+- Tailwind CSS @3.4.9
+- SQLite
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+<h2 id="how-to-run">How To Run</h2>
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. <b>With Docker</b> (not working)
+- Clone this repository
+```
+git clone https://github.com/chankiel/Tucil3_13522029
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Go to the directory where you cloned this repository
+```
+cd path/to/this/repo
+```
 
-## Laravel Sponsors
+- Copy the '.env.example' file to '.env' if it exists
+```
+cp .env.example .env
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Create the database.sqlite file
+```
+New-Item -Path "database/database.sqlite" -ItemType "File"
+```
 
-### Premium Partners
+- Build and start Docker Containers
+```
+docker-compose up --build
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Generate application key
+```
+docker-compose exec app php artisan key:generate
+```
 
-## Contributing
+- Run database migrations  
+```
+docker-compose exec app php artisan migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Seed the database
+```
+docker-compose exec app php artisan db:seed
+```
 
-## Code of Conduct
+- Install Node.js Dependencies and Run Vite assets
+```
+docker-compose exec app npm install
+docker-compose exec app npm run dev
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Access the Application at http://localhost:8000 or http://127.0.0.1:8000
 
-## Security Vulnerabilities
+<hr>
+2. <b>With Artisan and npm</b>  
+- Clone this repository
+```
+git clone https://github.com/chankiel/Tucil3_13522029
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Go to the directory where you cloned this repository
+```
+cd path/to/this/repo
+```
 
-## License
+- Run this command to create the database.sqlite file
+```
+New-Item -Path "database/database.sqlite" -ItemType "File"
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Run migration and seeding for the database
+```
+php artisan migrate:fresh  
+php artisan db:seed
+```
+
+- Run vite build command to build the frontend assets
+!
+```
+npm run build
+```
+
+- Run php command to run the web app
+```
+php artisan serve
+```
+
+- Your web app should be running at your localhost. Visit localhost:8000 or 127.0.0.1:8000
+```
+http://127.0.0.1:8000  
+or  
+http://localhost:8000
+```
+
+<h2 id="design-pattern">Design Patterns</h2>
+
+1. <h3>Structural Patterns</h3>  
+   - Factory Pattern (UserFactory Class)    
+   Class UserFactory, yang mewarisi kelas Factory Laravel untuk menghasilkan instance model. Model dibuat di kelas Factory, tetapi User Factory yang merupakan subclass, mengubah tipe objek yang dibuat, yang dalam hal ini adalah User. 
+    - Builder Pattern (Query Builder)  
+Pola query builder Laravel memungkinkan konstruksi query SQL dengan cara yang lancar dan fleksibel. Ini menyediakan cara untuk membangun query kompleks dengan interface yang sederhana.
+
+2. Structural Patterns  
+   - MVC (Model-View-Controller)  
+Pola MVC adalah pola struktural, yang mengorganisir aplikasi menjadi tiga komponen yang saling terhubung (Model, View, Controller) untuk separation concerns dan mengelola kompleksitas.
+
+<h2 id="endpoints">Endpoints</h2>
+
+1. <b>Web App Endpoints </b> 
+   - GET "/"  
+   Tampilan home, berisi list films dengan pagination
+   - GET "/films/:slug"
+   Tampilan detail film, berisi deskripsi lengkap dari film yang bersangkutan, yakni judul, deskripsi, director, tahun rilis, durasi, genres, dan harga film. User disini dapat membeli film, menambahkan ke wishlist, memberi rating, menonton film (jika sudah membeli), dan juga memberikan komentar terkait film tersebut  
+   - GET "/myfilms"  
+   Tampilan film yang dimiliki pengguna. Berisi daftar film yang telah dibeli oleh pengguna  
+   - GET "/wishlist"  
+   Tampilan wishlist pengguna, berisi daftar film yang telah ditandai sebagai bagian dari wishlist pengguna (baik yang sudah dibeli ataupun belum)  
+   - GET "/register"
+   Tampilan register, berisi tampilan pendaftaran pengguna baru, dengan input berupa username, email, firstname, lastname, dan password calon pengguna.  
+   - GET "/login"  
+   Berisi tampilan login pengguna dengan input berupa username / email dan password.
+   - POST "/add-user"  
+   Route logic BE untuk menambah pengguna baru  
+   - POST "/login-be"  
+   Route logic BE untuk menghandle request login dari pengguna
+   - POST "/logout-be"  
+   Route logic BE untuk menghandle request logout dari pengguna
+   - POST "/buy-film/{film}"  
+   Route logic BE untuk menghandle request pembelian film pengguna
+   - POST "/wish-film/{film}"  
+   Route logic BE untuk menghandle request penambahan film ke wishlist pengguna
+   - POST "/buy-film/{film}"  
+   Route logic BE untuk menghandle request penghapusan film dari wishlist pengguna
+   - POST "/rate-film/{film}/{rating}"  
+   Route logic BE untuk menghandle request pemberian rating film dari pengguna
+   - POST "/comment-film/{film}"  
+   Route logic BE untuk menghandle request pemberian komentar film dari pengguna  
+
+2. Web App API  
+   - POST /films
+   - GET /films
+   - GET /films/:id
+   - PUT /films/:id
+   - DELETE /films/:id
+   - POST /login
+   - GET /self
+   - GET /users
+   - GET /users/:id
+   - POST /users/:id/balance
+   - DELETE /users/:id
+
+<h2 id="author">Author</h2>
+<pre>
+  Name  : Ignatius Jhon Hezkiel Chan
+  NIM   : 13522029
+  Email : <a href="mailto:13522029@std.stei.itb.ac.id">13522029@std.stei.itb.ac.id</a>
+</pre>
