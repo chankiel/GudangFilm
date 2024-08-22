@@ -126,9 +126,11 @@ http://localhost:8000
 <h2 id="design-pattern">Design Patterns</h2>
 
 1. <h3>Structural Patterns</h3>  
+
    - Factory Pattern (UserFactory Class)    
    Class UserFactory, yang mewarisi kelas Factory Laravel untuk menghasilkan instance model. Model dibuat di kelas Factory, tetapi User Factory yang merupakan subclass, mengubah tipe objek yang dibuat, yang dalam hal ini adalah User. 
-    - Builder Pattern (Query Builder)  
+
+   - Builder Pattern (Query Builder)  
 Pola query builder Laravel memungkinkan konstruksi query SQL dengan cara yang lancar dan fleksibel. Ini menyediakan cara untuk membangun query kompleks dengan interface yang sederhana.
 
 2. Structural Patterns  
