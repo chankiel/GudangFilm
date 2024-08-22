@@ -38,11 +38,12 @@ class AuthController extends Controller
             return null;
         }
 
-        if($isAdmin && $credentials['usrnm']!=='admin'){
+        
+        $user = User::where('username',$credentials['usrnm'])->first();
+        if($isAdmin && !$user->role){
             return null;
         }
-
-        $user = User::where('username',$credentials['usrnm'])->first();
+        
         if(!$user){
             return null;
         }
@@ -80,22 +81,23 @@ class AuthController extends Controller
         
         $token = JwtHelper::encode([
             'usrnm' => $user->username,
-            'pswrd' => $credentials['password'],
         ]);
         return ["status"=>"true","msg"=>$token];
     }
 
     public function login(Request $request)
     {
-        $isAPI = $request->route()->uri()==='api/login';
-        $res = $this->checkCred($request->all(),$isAPI);
-
-        if(!$isAPI){
-            if ($res['status'] === "true") {
-                $this->setJwt($res['msg']);
-            }
-            return $res;
+        $res = $this->checkCred($request->all(),false);    
+    
+        if ($res['status'] === "true") {
+            $this->setJwt($res['msg']);
         }
+        return $res;
+    }
+
+    public function loginAPI(Request $request)
+    {
+        $res = $this->checkCred($request->all(),true);
 
         $status = "error";
         $message = $res['msg'];

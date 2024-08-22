@@ -27,7 +27,7 @@ class FilmCollection extends ResourceCollection
         if(!$this->collection->isEmpty()){
             $data = $this->collection->map(function($film){
                 return [
-                    'id' => $film->id,
+                    'id' => (string)$film->id,
                     'title' => $film->title,
                     'description' => $film->description,
                     'director' => $film->director,

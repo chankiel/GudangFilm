@@ -1,5 +1,5 @@
 <x-layout :authed="$authed">
-    <div class="m-1 lg:px-40 px-24">
+    <div class="m-1 lg:px-40 md:px-24 px-4">
         <h1 class="text-3xl font-bold my-6">{{ $title }}</h1>
         <x-search-bar></x-search-bar>
     </div>

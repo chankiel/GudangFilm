@@ -34,18 +34,24 @@ class PageController extends Controller
         $authed = AuthController::check($request);
 
         $genres = $film->genres->pluck('genre')->toArray();
-        $bought = $authed->bought()->where('id', $film->id)->exists();
-        $wished = $authed->wishlist()->where('id', $film->id)->exists();
-        
+
+        $bought = null;
+        $wished = null;
+        $rating = null;
+        if($authed){
+            $rating = $authed->rated()->where('id', $film->id)->first();
+            if($rating){
+                $rating = $rating->pivot->rating;
+            }
+            $bought = $authed->bought()->where('id', $film->id)->exists();
+            $wished = $authed->wishlist()->where('id', $film->id)->exists();
+        }
+
         $comments = $film->comments()->orderBy('created_at','desc')->get();
         $commentsCount = $comments->count();
 
-        $rating = $authed->rated()->where('id', $film->id)->first();
-        if(!$rating){
-            $rating = null;
-        }else{
-            $rating = $rating->pivot->rating;
-        }
+        $avg_rating = $film->ratings()->avg("ratings.rating");
+        $count_rating = $film->ratings()->count();
 
         return view('filmDetail', [
             'film' => $film,
@@ -54,6 +60,8 @@ class PageController extends Controller
             'bought' => $bought,
             'wished' => $wished,
             'rating' => $rating,
+            'avg_rating' => $avg_rating,
+            'count_rating' => $count_rating,
             'comments' => $comments,
             'commentsCount' => $commentsCount,
             'formattedDuration' => FileHelper::formatDuration($film->duration),

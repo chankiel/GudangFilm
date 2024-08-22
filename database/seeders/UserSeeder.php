@@ -15,12 +15,13 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'email' => 'admin@gmail.com',
-            'username' => 'admin',
+            'email' => 'labpro@gmail.com',
+            'username' => 'labpro',
             'firstname' => 'admin',
             'lastname' => 'admin',
             'balance' => '1000000',
             'password' => 'admin123',
+            'role' => true,
         ]);
         
         User::factory()->count(10)->withPassword("IkanBakar3$")->create();

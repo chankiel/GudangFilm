@@ -7,6 +7,7 @@ use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Resources\FilmCollection;
 use App\Http\Requests\StoreFilmRequest;
+use App\Http\Resources\FilmResourceJSON;
 use Illuminate\Support\Facades\Storage;
 
 class FilmController extends Controller
@@ -72,12 +73,11 @@ class FilmController extends Controller
             $data = $this->prepareData($request);
 
             $film = Film::createFilm($data);
-            return new FilmCollection('success', 'Film added successfully', collect([$film]));
+            return new FilmResourceJSON('success', 'Film added successfully', $film);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
-
 
     /**
      * Display the specified resource.
@@ -87,10 +87,10 @@ class FilmController extends Controller
         $film = Film::find($id);
 
         if (!$film) {
-            return new FilmCollection('error', 'Film not found', collect());
+            return new FilmResourceJSON('error', 'Film not found', null);
         }
 
-        return new FilmCollection("success", "Film found", collect([$film]));
+        return new FilmResourceJSON("success", "Film found", $film);
     }
 
     /**
@@ -98,17 +98,16 @@ class FilmController extends Controller
      */
     public function update(StoreFilmRequest $request, string $id)
     {
-
         $film = Film::find($id);
 
         if (!$film) {
-            return new FilmCollection('error', 'Film not found', collect());
+            return new FilmResourceJSON('error', 'Film not found', null);
         }
 
         $data = $this->prepareData($request);
         $film->update($data);
 
-        return new FilmCollection("success", "Film updated successfully", collect([$film]));
+        return new FilmResourceJSON("success", "Film updated successfully", $film);
     }
 
     /**
@@ -119,13 +118,13 @@ class FilmController extends Controller
         $film = Film::find($id);
 
         if (!$film) {
-            return new FilmCollection('error', 'Film not found', collect());
+            return new FilmResourceJSON('error', 'Film not found', null);
         }
 
         FileHelper::deleteFilmAsset($film->video_url);
         FileHelper::deleteFilmAsset($film->cover_image_url);
 
-        $response = new FilmCollection("success", "Film deleted successfully", collect([$film]));
+        $response = new FilmResourceJSON("success", "Film deleted successfully", $film);
 
         $film->delete();
 

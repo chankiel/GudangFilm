@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Film;
 use App\Models\User;
-use App\Helpers\JwtHelper;
 use App\Helpers\JSONHelper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserResourceJSON;
 use App\Http\Resources\UserCollection;
 use App\Http\Requests\StoreUserRequest;
-use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -45,10 +43,10 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error', 'User not found', collect());
+            return new UserResourceJSON('error', 'User not found', null);
         }
 
-        return new UserCollection('success', 'User found', collect([$user]));
+        return new UserResourceJSON('success', 'User found', $user);
     }
 
     public function addBalance(Request $request, string $id)
@@ -56,23 +54,23 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error', 'User not found', collect());
+            return new UserResourceJSON('error', 'User not found', null);
         }
 
         $increment = (int)$request->input('increment');
         if (!is_numeric($increment)) {
-            return new UserCollection('error', 'Increment must be numeric', collect([$user]));
+            return new UserResourceJSON('error', 'Increment must be numeric', $user);
         }
 
         $increment = (int)$increment;
-        // if($increment<0){
-        //     return JSONHelper::JSONResponse('error','Increment must be greater equal than 0',[]);
-        // }
+        if($increment<0){
+            return JSONHelper::JSONResponse('error','Increment must be greater equal than 0',[]);
+        }
 
         $user->balance += $increment;
         $user->save();
 
-        return new UserCollection('success', 'User\'s balance incremented successfully', collect([$user]));
+        return new UserResourceJSON('success', 'User\'s balance incremented successfully', $user);
     }
 
     /**
@@ -83,10 +81,10 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return new UserCollection('error', 'User not found', collect());
+            return new UserResourceJSON('error', 'User not found', null);
         }
 
-        $response = new UserCollection('success', 'User berhasil dihapus', collect([$user]));
+        $response = new UserResourceJSON('success', 'User berhasil dihapus', $user);
 
         $user->delete();
         return $response;
@@ -109,10 +107,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'You don\'t have enough balance to buy this film.');
         }
 
-        $user->balance -= $film->price;
-        $user->save();
-
-        $user->bought()->attach($film->id);
+        $user->buyFilm($film);
 
         return redirect()->back()->with('success', 'Film purchased successfully.');
     }
@@ -168,8 +163,6 @@ class UserController extends Controller
         $user->rated()->syncWithoutDetaching([
             $film->id => ['rating' => $rating]
         ]);
-
-        $film->updateRatingInfo();
 
         return redirect()->back();
     }

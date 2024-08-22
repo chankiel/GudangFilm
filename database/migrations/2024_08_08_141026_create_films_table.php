@@ -23,14 +23,12 @@ return new class extends Migration
             $table->integer('duration');
             $table->string('video_url')->nullable();
             $table->string('cover_image_url')->nullable();
-            $table->float('avg_rating')->default(0);
-            $table->float('count_rating')->default(0);
             $table->timestamps();
         });
 
         Schema::create('film_genres',function(Blueprint $table){
             $table->unsignedBigInteger('film_id');
-            $table->enum('genre',Film::genreList());
+            $table->string('genre');
             $table->primary(['film_id','genre']);
             $table->foreign('film_id')->references('id')->on('films')
             ->onDelete('cascade'); 

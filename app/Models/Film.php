@@ -80,12 +80,6 @@ class Film extends Model
         ->withPivot('rating');
     }
 
-    public function updateRatingInfo(){
-        $this->avg_rating = $this->ratings()->avg('ratings.rating');
-        $this->count_rating = $this->ratings()->count();
-        $this->save();
-    }
-
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);

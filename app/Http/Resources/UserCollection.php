@@ -27,7 +27,7 @@ class UserCollection extends ResourceCollection
         if(!$this->collection->isEmpty()){
             $data = $this->collection->map(function($user){
                 return [
-                    'id' => $user->id,
+                    'id' => (string)$user->id,
                     'username' => $user->username,
                     'email' => $user->email,
                     'balance' => $user->balance,

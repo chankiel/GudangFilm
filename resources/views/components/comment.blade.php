@@ -6,7 +6,7 @@
     <div class="w-full bg-bgBlue border min-h-24">
         <div class="flex gap-4 items-center py-2 pl-3 bg-gray-300 text-black">
             <div class="">{{ $comment->user->username }}</div>
-            <div class="flex items-center gap-1"><span class="material-symbols-outlined">
+            <div class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined">
                 schedule
                 </span>{{ $comment->created_at->diffForHumans() }}</div>
         </div>

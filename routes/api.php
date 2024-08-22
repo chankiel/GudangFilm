@@ -19,4 +19,4 @@ Route::middleware([AdminMiddleware::class])->group(function(){
 });
 
 Route::get('self',[AuthController::class,'self']);
-Route::post('login',[AuthController::class,'login']);
+Route::post('login',[AuthController::class,'loginAPI']);

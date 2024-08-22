@@ -27,7 +27,7 @@
                     </div>
                 @else
                     <a href="/login"
-                        class="bg- px-3 rounded-2xl bg-softBlue border-2 border-softBlue hover:bg-darkOcean py-2">Log In</a>
+                        class="bg- px-3 rounded-2xl bg-blue-800 border-2 hover:bg-darkOcean py-2">Log In</a>
                 @endif
             </nav>
             <button id="mobile-menu"
@@ -39,6 +39,7 @@
             class=" z-10 hidden md:hidden absolute top-full left-0 w-full bg-darkOcean shadow-lg rounded-bl-2xl rounded-br-2xl transition-opacity opacity-0 duration-300 ease-in-out">
             <a href="/" class="block px-4 py-2 {{ request()->is('/')===true ? 'font-extrabold':'hover:bg-gray-100 hover:text-black' }}">Home</a>
             <a href="/myfilms" class="block px-4 py-2 {{ request()->is('myfilms')===true ? 'font-extrabold':'hover:bg-gray-100 hover:text-black' }}">My Films</a>
+            <a href="/wishlist" class="block px-4 py-2 {{ request()->is('wishlist')===true ? 'font-extrabold':'hover:bg-gray-100 hover:text-black' }}">Wishlist</a>
             @if ($authed)
                 <div class="px-4 py-2 flex gap-5">
                     <span class="material-symbols-outlined">account_circle</span>

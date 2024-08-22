@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'firstname',
         'lastname',
+        'role',
     ];
 
     /**
@@ -67,5 +68,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Film::class,'comments')
         ->withPivot('comment');
+    }
+
+    public function buyFilm(Film $film){
+        $this->balance -= $film->price;
+        $this->save();
+
+        $this->bought()->attach($film->id);
     }
 }
