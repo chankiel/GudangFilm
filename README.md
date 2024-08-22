@@ -92,6 +92,12 @@ cd path/to/this/repo
 New-Item -Path "database/database.sqlite" -ItemType "File"
 ```
 
+- Install dependencies with Composer and npm
+```
+npm install
+composer install
+```
+
 - Run migration and seeding for the database
 ```
 php artisan migrate:fresh  
@@ -99,7 +105,6 @@ php artisan db:seed
 ```
 
 - Run vite build command to build the frontend assets
-!
 ```
 npm run build
 ```
