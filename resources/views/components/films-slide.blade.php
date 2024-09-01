@@ -11,7 +11,7 @@
                 <div class="flex flex-col items-center max-h-16">
                     <h1 class="w-full text-center mt-3 md:text-base text-sm" title="{{ $film->title }}">
                         <span class="block lg:hidden">{{ Str::limit($film->title, 20) }}</span>
-                        <span class="hidden lg:block">{{ Str::limit($film->title, 40) }}</span>
+                        <span class="hidden lg:block">{{ Str::limit($film->title, 35) }}</span>
                     </h1>
                     <h4 class="text-xs text-gray-400">{{ $film->release_year }}</h4>
                 </div>
