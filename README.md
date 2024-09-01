@@ -4,9 +4,9 @@
 </p>
 <h2 id="description">Description </h2>
 
-Gudang Film is a web app where users can purchase and watch their favorite films. The app offers a list of films available for purchase, with a variety of genres, including Action, Horror, Romance, and many others. This app also serves as a streaming platform, allowing users to watch films immediately after purchasing them.
+Gudang Film adalah aplikasi web di mana pengguna dapat membeli dan menonton film favorit mereka. Aplikasi ini menawarkan daftar film yang tersedia untuk dibeli, dengan berbagai genre, termasuk Aksi, Horor, Romansa, dan banyak lainnya. Aplikasi ini juga berfungsi sebagai platform streaming, memungkinkan pengguna untuk menonton film segera setelah membelinya.
 
-The web app is equipped with an authentication feature that uses token-based authentication with JWT tokens. It also includes a WishList feature for users who want to bookmark a film for future purchase or viewing, a rating feature so users can gauge the quality of a film based on public opinion, and a commenting feature that enables users to discuss films with each other.
+Aplikasi web ini dilengkapi dengan fitur otentikasi yang menggunakan otentikasi berbasis token dengan token JWT. Selain itu, terdapat fitur WishList bagi pengguna yang ingin menandai film untuk pembelian atau penayangan di masa depan, fitur penilaian agar pengguna dapat menilai kualitas film berdasarkan pendapat publik, dan fitur komentar yang memungkinkan pengguna untuk berdiskusi tentang film satu sama lain.
 
 <h2 id="table-of-contents">Table of Contents</h2>
 - <a href="#description">Description</a><br/>
@@ -27,7 +27,7 @@ The web app is equipped with an authentication feature that uses token-based aut
 
 <h2 id="how-to-run">How To Run</h2>
 
-1. <b>With Docker</b> (not working)
+1. <b>With Docker</b>
 - Clone this repository
 ```
 git clone https://github.com/chankiel/Tucil3_13522029
@@ -125,101 +125,117 @@ http://localhost:8000
 
 <h2 id="design-pattern">Design Patterns</h2>
 
-1. <h3>Structural Patterns</h3>  
+1. <h3>Creational Patterns</h3>  
 
    - Factory Pattern (UserFactory Class)    
    Class UserFactory, yang mewarisi kelas Factory Laravel untuk menghasilkan instance model. Model dibuat di kelas Factory, tetapi User Factory yang merupakan subclass, mengubah tipe objek yang dibuat, yang dalam hal ini adalah User. 
+      ```php
+      /**
+       * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+      */
+      class UserFactory extends Factory
+      ```
 
    - Builder Pattern (Query Builder)  
 Pola query builder Laravel memungkinkan konstruksi query SQL dengan cara yang lancar dan fleksibel. Ini menyediakan cara untuk membangun query kompleks dengan interface yang sederhana.
+      ```php
+      $query = $request->input('search');
+      if ($query) {
+         $query = strtolower($query);
+         $filmQuery->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
+               ->orWhereRaw('LOWER(director) LIKE ?', ["%{$query}%"]);
+      }
+      return $filmQuery->paginate($qtyFilm);
+      ```
 
-2. Structural Patterns  
-   - MVC (Model-View-Controller)  
-Pola MVC adalah pola struktural, yang mengorganisir aplikasi menjadi tiga komponen yang saling terhubung (Model, View, Controller) untuk separation concerns dan mengelola kompleksitas.
+2. <h3>Structural Patterns </h3> 
 
-<h2 id="endpoints">Endpoints</h2>
+   - MVC (Model-View-Controller)     
+   Pola MVC adalah pola struktural, yang mengorganisir aplikasi menjadi tiga komponen yang saling terhubung (Model, View, Controller) untuk separation concerns dan mengelola kompleksitas.
 
-1. <b>Web App Endpoints </b> 
-   - GET "/"  
-   Tampilan home, berisi list films dengan pagination
-   - GET "/films/:slug"
-   Tampilan detail film, berisi deskripsi lengkap dari film yang bersangkutan, yakni judul, deskripsi, director, tahun rilis, durasi, genres, dan harga film. User disini dapat membeli film, menambahkan ke wishlist, memberi rating, menonton film (jika sudah membeli), dan juga memberikan komentar terkait film tersebut  
-   - GET "/myfilms"  
-   Tampilan film yang dimiliki pengguna. Berisi daftar film yang telah dibeli oleh pengguna  
-   - GET "/wishlist"  
-   Tampilan wishlist pengguna, berisi daftar film yang telah ditandai sebagai bagian dari wishlist pengguna (baik yang sudah dibeli ataupun belum)  
-   - GET "/register"
-   Tampilan register, berisi tampilan pendaftaran pengguna baru, dengan input berupa username, email, firstname, lastname, dan password calon pengguna.  
-   - GET "/login"  
-   Berisi tampilan login pengguna dengan input berupa username / email dan password.
-   - POST "/add-user"  
-   Route logic BE untuk menambah pengguna baru  
-   - POST "/login-be"  
-   Route logic BE untuk menghandle request login dari pengguna
-   - POST "/logout-be"  
-   Route logic BE untuk menghandle request logout dari pengguna
-   - POST "/buy-film/{film}"  
-   Route logic BE untuk menghandle request pembelian film pengguna
-   - POST "/wish-film/{film}"  
-   Route logic BE untuk menghandle request penambahan film ke wishlist pengguna
-   - POST "/buy-film/{film}"  
-   Route logic BE untuk menghandle request penghapusan film dari wishlist pengguna
-   - POST "/rate-film/{film}/{rating}"  
-   Route logic BE untuk menghandle request pemberian rating film dari pengguna
-   - POST "/comment-film/{film}"  
-   Route logic BE untuk menghandle request pemberian komentar film dari pengguna  
+## Endpoints
+### Monolith
+#### Frontend Web App Route
+|Endpoint|Deskripsi|Body|Param|Query|
+|---|---|---|---|---|
+|GET ```/```|Tampilan home, berisi list films dengan pagination|-|-|-|
+|GET ```/login```|Mendapatkan page login|-|-|-|
+|GET ```/register```|Mendapatkan page register|-|-|-|
+|GET ```/myfilms```|Mendapatkan page daftar film yang sudah dibeli|-|-|-|
+|GET ```/wishlist```|-|-|-|-|
+|GET ```/films/:slug```|Film detail page|-|```slug```|-|
 
-2. Web App API  
-   - POST /films
-   - GET /films
-   - GET /films/:id
-   - PUT /films/:id
-   - DELETE /films/:id
-   - POST /login
-   - GET /self
-   - GET /users
-   - GET /users/:id
-   - POST /users/:id/balance
-   - DELETE /users/:id
+#### Backend Web App Route
+|Endpoint|Deskripsi|Body|Param|Query|
+|---|---|---|---|---|
+|POST ```/add-user```|Menambah pengguna baru|-|-|-|
+|POST ```/login-be```|Menghandle request login dari pengguna|-|-|-|
+|POST ```/logout-be```|Menghandle request logout dari pengguna|-|-|-|
+|POST ```/buy-film/:id```| Menghandle request pembelian film pengguna dari pengguna|-|```id film```|-|
+|POST ```/wish-film/:id```| Menghandle request penambahan film ke wishlist pengguna-|```id film```|-|
+|DELETE ```/unwish-film/:id```| Menghandle request penghapusan film dari wishlist pengguna|-|```id film```|-|
+|POST ```/rate-film/:id/:rating```|Menghandle request pemberian rating film dari pengguna|-|```id film```,```rating```|-|
+|POST ```/comment-film/:id```|Menghandle request pemberian komentar film dari pengguna|```comment```|```id film```|-|
 
-<h2 id="bonus">Bonus</h2>
+#### API
+|Endpoint|Deskripsi|Body|Param|Query|
+|---|---|---|---|---|
+|GET ```/films```|Mendapatkan list semua films|-|-|Sesuai spesifikasi|
+|POST ```/films```|Menambahkan film baru|Sesuai spesifikasi|-|-|
+|GET ```/films/:id```|Mendapatkan film berdasarkan id film|-|```id film```|-|
+|PUT ```/films/:id```|Update film sesuai id|Sesuai spesifikasi|```id film```|-|
+|DELETE ```/films/:id```|Hapus film sesuai id|Sesuai spesifikasi|```id film```|-|
+|GET ```/users```|Mendapatkan semua user|-|-|-|
+|GET ```/users/:id```|Mendapatkan user sesuai id|-|```id user```|-|
+|POST ```/users:id/balance```|Update balance user|```increment```|```id user```|-|
+|DELETE ```/users/:id```|Menghapus user sesuai id|-|```id user```|-|
+|POST ```login```|Melakukan login untuk admin|```username```, ```email```|-|-|
+|GET ```/api/self```|Mendapatkan data admin|-|-|-|
 
-- B06 - Responsive Layout
-- B08 - SOLID  
-   Project ini menggunakan konsep MVC (Model-View-Controller) sebagai separation of concern dan agar memenuhi prinsip SOLID. Pembuatan class lain pada projek ini juga dibuat agar memenuhi prinsip-prinsip SOLID. Berikut adalah rincian class-class yang dibuat pada projek ini.
-   1. Helper  
-      Helper Class adalah class yang berisi metode-metode pembantu yang dibutuhkan pada class-class lain
-   2. Controlers  
-      Class Controlers bertanggung jawab untuk menerima request, memproses request tersebut dengan bantuan Model ataupun kelas lain, dan mengembalikan response yang sesuai  
-   3. Middleware  
-      Class Middleware bertanggung jawab sebagai 'filter' untuk request sebelum mencapai logic dari aplikasi. Disini dilakukan penyaringan request berdasarkan Authentication dan Authorization dari pengirim request dan request itu sendiri.
-   4. Request
-      Class Request berfungsi untuk melakukan penyaringan request setelah melalui middleware. Penyaringan disini bersifat spesifik terhadap resource yang ingin dilakukan operasi, seperti rules terhadap request body, dll.
-   5. Resources
-      Class Resources berfungsi untuk mengatur bentuk response JSON yang dikembalikan oleh API  
-   6. Models
-      Class Models mewakili entity atau row pada table database. Class Models berisi definisi dari suatu model dan business logic dari model tersebut.  
-   7. Rules
-      Class Rules berisi rule spesifik terhadap suatu attribut request yang kemudian akan digunakan pada Class Request. Penggunaan class ini agar dapat lebih leluasa dan fleksibel terhadap pemeriksaan attribut dan request dan pesan error yang dikembalikan
-   8. Migrations
-      Class Migrations berisi definisi tabel pada database, yang kemudian dijalankan untuk membangun definisi tersebut pada database.
-   9. Factories
-      Class Factory digunakan untuk membentuk suatu instance pada Model (umumnya instance dummy untuk seeding), yang dimana pada class ini dapat didefinisikan tiap-tiap attribut user yang akan dibentuk. Umumnya class ini digunakan pada Seeder.
-   10. Seeder
-      Class Seeder digunakan untuk melakukan operasi seeding terhadap database. Class ini berisi deretan instruksi seeding yang umumnya berupa aplikasi dari factory yang didefinisikan terhadap model tersebut.
-   11. Views
-      Views merupakan komponen projek yang bertanggung jawab terhadap tampilan frontend dari web app. Pada laravel, bentuk dari Views ini merupakan blade templating engine.
-   12. Routes
-      Routes merupakan komponen projek yang berfungsi untuk menerima request dari pengguna. Request yang diterima ini kemudian dihantarkan kepada Controller yang bersangkutan.
+## Bonus
 
-- B10 - Fitur Tambahan
-    - Fitur Rating + Review
-       Pada Film Details Page, terdapat fitur untuk memberikan rating, misal bintang 1-5. Selain rating, terdapat juga fitur review atau menambahkan komentar terkait film tersebut. Pengguna tentu dapat melihat rating dan review dari pengguna lainnya.
-    - Wishlist  
-       Pada Film Details Page, tambahkan fitur Wishlist yang memungkinkan pengguna untuk menambahkan film yang mereka minati ke dalam daftar Wishlist mereka. Pengguna dapat melihat dan mengelola daftar Wishlist mereka pada halaman terpisah. Fitur ini dapat membantu pengguna untuk menyimpan film yang ingin mereka beli atau tonton nanti.  
+### B06 - Responsive Layout
+Aplikasi ini sudah dibuat responsive sesuai dengan ukuran layar perangkat pengguna
 
- - B11 - Bucket  
-   Projek ini menggunakan Amazon S3 Bucket sebagai cloud storage untuk penyimpanan cover image dan video dari film.
+### B08 - SOLID
+Aplikasi ini menggunakan konsep SOLID dalam pembuatan design class. Beberapa class pada project ini adalah sebagai berikut.
+
+#### 1. Helper  
+   Helper Class adalah class yang berisi metode-metode pembantu yang dibutuhkan pada class-class lain
+#### 2. Controlers  
+   Class Controlers bertanggung jawab untuk menerima request, memproses request tersebut dengan bantuan Model ataupun kelas lain, dan mengembalikan response yang sesuai  
+#### 3. Middleware  
+   Class Middleware bertanggung jawab sebagai 'filter' untuk request sebelum mencapai logic dari aplikasi. Disini dilakukan penyaringan request berdasarkan Authentication dan Authorization dari pengirim request dan request itu sendiri.
+#### 4. Request
+   Class Request berfungsi untuk melakukan penyaringan request setelah melalui middleware. Penyaringan disini bersifat spesifik terhadap resource yang ingin dilakukan operasi, seperti rules terhadap request body, dll.
+#### 5. Resources
+   Class Resources berfungsi untuk mengatur bentuk response JSON yang dikembalikan oleh API  
+#### 6. Models
+   Class Models mewakili entity atau row pada table database. Class Models berisi definisi dari suatu model dan business logic dari model tersebut.  
+#### 7. Rules
+   Class Rules berisi rule spesifik terhadap suatu attribut request yang kemudian akan digunakan pada Class Request. Penggunaan class ini agar dapat lebih leluasa dan fleksibel terhadap pemeriksaan attribut dan request dan pesan error yang dikembalikan
+#### 8. Migrations
+   Class Migrations berisi definisi tabel pada database, yang kemudian dijalankan untuk membangun definisi tersebut pada database.
+#### 9. Factories
+   Class Factory digunakan untuk membentuk suatu instance pada Model (umumnya instance dummy untuk seeding), yang dimana pada class ini dapat didefinisikan tiap-tiap attribut user yang akan dibentuk. Umumnya class ini digunakan pada Seeder.
+#### 10. Seeder
+   Class Seeder digunakan untuk melakukan operasi seeding terhadap database. Class ini berisi deretan instruksi seeding yang umumnya berupa aplikasi dari factory yang didefinisikan terhadap model tersebut.
+#### 11. Views
+   Views merupakan komponen projek yang bertanggung jawab terhadap tampilan frontend dari web app. Pada laravel, bentuk dari Views ini merupakan blade templating engine.
+#### 12. Routes
+   Routes merupakan komponen projek yang berfungsi untuk menerima request dari pengguna. Request yang diterima ini kemudian dihantarkan kepada Controller yang bersangkutan.
+
+### B10 - Fitur Tambahan
+Terdapat beberapa fitur tambahan pada aplikasi ini antara lain, yaitu
+
+#### 1. Wishlist
+Fitur Wishlist yang memungkinkan pengguna untuk menambahkan film yang mereka minati ke dalam daftar Wishlist mereka. Pengguna dapat melihat dan mengelola daftar Wishlist mereka pada halaman terpisah. Fitur ini dapat membantu pengguna untuk menyimpan film yang ingin mereka beli atau tonton nanti. 
+
+#### 2. Fitur Rating dan Review
+Pengguna dapat memberikan rating terhadap suatu film, misal bintang 1-5. Selain rating, terdapat juga fitur review atau menambahkan komentar terkait film tersebut. Pengguna tentu dapat melihat rating dan review dari pengguna lainnya.
+
+### B11 - Ember
+Projek ini menggunakan Amazon S3 Bucket sebagai cloud storage untuk penyimpanan cover image dan video dari film.
 
 
 <h2 id="author">Author</h2>
