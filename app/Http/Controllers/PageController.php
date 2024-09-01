@@ -25,7 +25,7 @@ class PageController extends Controller
         $authed = AuthController::check($request);
         $filmQuery = Film::query();
 
-        $films = $this->handleQuery($request,$filmQuery,14);
+        $films = $this->handleQuery($request,$filmQuery,12);
         return view('filmsList', ['films' => $films, 'authed' => $authed,'title'=>""]);
     }
 

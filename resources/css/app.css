@@ -7,11 +7,19 @@ html,body{
     font-family: "montserrat",sans-serif;
 }
 
-.film {
-  flex: 1 1 calc(20% - 16px);
-}
-
 
 
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+ /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+}
+}
