@@ -18,7 +18,8 @@
                 <div class="ml-4 w-full">
                     <h1 class="md:text-3xl font-semibold">{{ $film->title }}</h1>
                     <h3 class="text-sm my-2">{{ implode(' | ', $genres) }} - {{ $formattedDuration }}</h3>
-                    <h2 class="md:mb-6 text-xl text-yellow-500 font-bold">Rp.{{ number_format($film->price, 0, ',', '.') }}
+                    <h2 class="md:mb-6 text-xl text-yellow-500 font-bold">
+                        Rp.{{ number_format($film->price, 0, ',', '.') }}
                     </h2>
                     <div class="md:flex gap-3 hidden">
                         @if (!$bought)
@@ -28,10 +29,6 @@
                                     class="rounded-2xl w-full p-4 border-4 font-bold bg-orange-400 text-darkOcean">Buy
                                     Film</button>
                             </form>
-                            @if (session('error'))
-                                <div class="text-red-500 w-full error h-5" id="error-user">{{ session('error') }}</div>
-                            @endif
-                        @else
                         @endif
                         @if (!$wished)
                             <form action="{{ url('wish-film/' . $film->id) }}" method="POST" class="w-1/2">
@@ -49,15 +46,19 @@
                             </form>
                         @endif
                     </div>
+                    @if (session('error'))
+                        <div class="text-red-500 w-full error h-5" id="error-user">{{ session('error') }}</div>
+                    @endif
                     <div class="hidden gap-3 mt-3 md:flex">
                         <h1 class="flex justify-center items-center text-2xl bg-gray-700 rounded-2xl w-12">
                             {{ number_format($avg_rating ?? 0, 1) }}</h1>
                         <div class="cursor-pointer">
                             @for ($i = 1; $i <= 5; $i++)
-                                <form action="{{ url('rate-film/' . $film->id . '/'.$i) }}" method="POST"
+                                <form action="{{ url('rate-film/' . $film->id . '/' . $i) }}" method="POST"
                                     class="inline-block" id="star-{{ $i }}">
                                     @csrf
-                                    <button class="fa fa-star" type="submit" {{ !$bought ? 'disabled' : ''}} aria-label="Star Rating {{ $i }}"></button>
+                                    <button class="fa fa-star" type="submit" {{ !$bought ? 'disabled' : '' }}
+                                        aria-label="Star Rating {{ $i }}"></button>
                                 </form>
                             @endfor
                             <p class="text-sm">{{ $count_rating }} votes</p>
@@ -71,10 +72,11 @@
                     {{ $avg_rating ?? 0 }}</h1>
                 <div class="cursor-pointer w-1/3">
                     @for ($i = 1; $i <= 5; $i++)
-                        <form action="{{ url('rate-film/' . $film->id . '/'.$i) }}" method="POST"
-                            class="inline-block" id="star-{{ $i }}">
+                        <form action="{{ url('rate-film/' . $film->id . '/' . $i) }}" method="POST" class="inline-block"
+                            id="star-{{ $i }}">
                             @csrf
-                            <button class="fa fa-star w-3" type="submit" {{ !$bought ? 'disabled' : ''}} aria-label="Star Rating {{ $i }}"></button>
+                            <button class="fa fa-star w-3" type="submit" {{ !$bought ? 'disabled' : '' }}
+                                aria-label="Star Rating {{ $i }}"></button>
                         </form>
                     @endfor
                     <p class="text-sm">{{ $count_rating }} votes</p>
@@ -85,8 +87,7 @@
                 @if (!$bought)
                     <form action="{{ url('buy-film/' . $film->id) }}" method="POST" class="w-1/2">
                         @csrf
-                        <button
-                            class="rounded-2xl w-full p-4 border-4 font-bold bg-orange-400 text-darkOcean">Buy
+                        <button class="rounded-2xl w-full p-4 border-4 font-bold bg-orange-400 text-darkOcean">Buy
                             Film</button>
                     </form>
                     @if (session('error'))
@@ -97,7 +98,8 @@
                 @if (!$wished)
                     <form action="{{ url('wish-film/' . $film->id) }}" method="POST" class="w-1/2">
                         @csrf
-                        <button class="text-sm md:text-base rounded-2xl w-full p-4 border-4 font-bold bg-blue-300 text-darkOcean">Add
+                        <button
+                            class="text-sm md:text-base rounded-2xl w-full p-4 border-4 font-bold bg-blue-300 text-darkOcean">Add
                             to
                             WishList</button>
                     </form>
@@ -123,11 +125,14 @@
                     <span class="material-symbols-outlined w-full">account_circle</span>
                 </div>
                 <div class="w-full relative">
-                    <input type="text" class="w-full bg-bgBlue border h-24 pl-3" placeholder="Join the discussion!" name="comment" required>
-                    <button class="mt-2 rounded-2xl p-3 border-4 font-bold bg-darkOcean text-white {{ !$bought ? 'cursor-not-allowed' : ''}}" {{ !$bought ? 'disabled' : ''}}>Post Comment</button>
+                    <input type="text" class="w-full bg-bgBlue border h-24 pl-3" placeholder="Join the discussion!"
+                        name="comment" required>
+                    <button
+                        class="mt-2 rounded-2xl p-3 border-4 font-bold bg-darkOcean text-white {{ !$bought ? 'cursor-not-allowed' : '' }}"
+                        {{ !$bought ? 'disabled' : '' }}>Post Comment</button>
                 </div>
             </form>
-                <div class="border-b">{{ $commentsCount }} Comments</div>
+            <div class="border-b">{{ $commentsCount }} Comments</div>
             @foreach ($comments as $comment)
                 <x-comment :comment="$comment"></x-comment>
             @endforeach
@@ -136,7 +141,7 @@
 
 
     @if (session('success'))
-    <div id="succ-modal" class="fixed inset-0 flex items-center justify-center ">
+        <div id="succ-modal" class="fixed inset-0 flex items-center justify-center ">
             <div class="bg-darkOcean rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 p-6 relative">
                 <span id="closeBtn"
                     class="absolute top-2 right-2 text-gray-500 hover:text-black cursor-pointer text-xl">&times;</span>
@@ -144,7 +149,8 @@
                     <span class="material-symbols-outlined">check_circle</span>
                     <h2 class="text-3xl font-semibold mb-4 mt-2">Success!</h2>
                     <p>{{ session('success') }}</p>
-                    <button id="okBtn" class="mt-2 font-bold border rounded-xl px-3 py-1 bg-blue-950 hover:bg-slate-400 hover:text-black">OK</button>
+                    <button id="okBtn"
+                        class="mt-2 font-bold border rounded-xl px-3 py-1 bg-blue-950 hover:bg-slate-400 hover:text-black">OK</button>
                 </div>
             </div>
         </div>
@@ -178,13 +184,13 @@
             }
         }
 
-        if(!bought){
+        if (!bought) {
             return;
         }
 
         for (let i = 1; i <= 5; i++) {
             const star = document.getElementById('star-' + i);
-            if(i<=rating){
+            if (i <= rating) {
                 star.classList.add("text-yellow-500");
             }
             star.addEventListener('mouseover', function() {
@@ -193,7 +199,7 @@
                     starBefore.classList.add("text-yellow-500");
                 }
 
-                for (let j = i+1; j <= 5; j++) {
+                for (let j = i + 1; j <= 5; j++) {
                     const starBefore = document.getElementById('star-' + j);
                     starBefore.classList.remove("text-yellow-500");
                 }
@@ -204,7 +210,7 @@
                     const starBefore = document.getElementById('star-' + j);
                     starBefore.classList.add("text-yellow-500");
                 }
-                for (let j = rating+1; j <= 5; j++) {
+                for (let j = rating + 1; j <= 5; j++) {
                     const starBefore = document.getElementById('star-' + j);
                     starBefore.classList.remove("text-yellow-500");
                 }
