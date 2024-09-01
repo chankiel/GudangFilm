@@ -38,7 +38,7 @@
                                     WishList</button>
                             </form>
                         @else
-                            <form action="{{ url('unwish-film/' . $film->id) }}" method="POST" class="w-1/2">
+                            <form action="{{ url('unwish-film/' . $film->id) }}" method="DELETE" class="w-1/2">
                                 @csrf
                                 <button class="rounded-2xl w-full p-4 border-4 font-bold bg-red-600 text-white">Remove
                                     from

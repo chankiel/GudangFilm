@@ -24,7 +24,7 @@ Route::middleware([AuthMiddleware::class])->group(function(){
 
     Route::post('buy-film/{film}',[UserController::class,'buyFilm'])->middleware([AuthMiddleware::class]);
     Route::post('wish-film/{film}',[UserController::class,'wishFilm'])->middleware([AuthMiddleware::class]);
-    Route::post('unwish-film/{film}',[UserController::class,'unwishFilm'])->middleware([AuthMiddleware::class]);
+    Route::delete('unwish-film/{film}',[UserController::class,'unwishFilm'])->middleware([AuthMiddleware::class]);
     Route::post('rate-film/{film}/{rating}',[UserController::class,'rateFilm'])->middleware([AuthMiddleware::class]);
     Route::post('comment-film/{film}',[UserController::class,'commentFilm'])->middleware([AuthMiddleware::class]);
 });
