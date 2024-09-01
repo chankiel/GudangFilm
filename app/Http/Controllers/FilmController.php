@@ -22,7 +22,7 @@ class FilmController extends Controller
             'title',
             'description',
             'director',
-            'genres',
+            'genre',
             'release_year',
             'price',
             'duration',

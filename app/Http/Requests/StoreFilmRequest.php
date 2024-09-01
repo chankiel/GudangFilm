@@ -50,7 +50,7 @@ class StoreFilmRequest extends FormRequest
     public function messages(): array
     {
         return[
-            'genres.*.in' => 'One or more input genres are invalid',
+            'genre.*.in' => 'One or more input genres are invalid',
         ];
     }
 

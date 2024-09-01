@@ -48,8 +48,8 @@ class Film extends Model
     }
 
     public static function createFilm($data){
-        $genres = $data['genres'];
-        unset($data['genres']);
+        $genres = $data['genre'];
+        unset($data['genre']);
         $film = Film::create($data);
         foreach($genres as $genre){
             DB::table('film_genres')->insert([
