@@ -15,11 +15,14 @@
                 <a href="/myfilms" class="{{ request()->is('myfilms')===true ?'font-bold border-b-2':'hover:text-gray-500' }}">My Films</a>
                 <a href="/wishlist" class="{{ request()->is('wishlist')===true ?'font-bold border-b-2':'hover:text-gray-500' }}">Wishlist</a>
                 @if ($authed)
-                    <div>Rp. {{ number_format($authed->balance, 0, '', '.') }}</div>
+                    <div>
+                        <h2 class="font-semibold text-sm">{{ $authed->username }}</h2>
+                        <div>Rp. {{ number_format($authed->balance, 0, '', '.') }}</div>
+                    </div>
                     <div class="relative group bg-darkOcean text-white px-4 rounded cursor-pointer"><span
                             class="material-symbols-outlined">account_circle</span>
                         <div
-                            class="absolute left-0 top-full bg-white border border-gray-300 shadow-lg rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            class="absolute -left-2 top-full bg-white border p-2 border-gray-300 shadow-lg rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <form class="text-darkOcean font-semibold" action="/logout-be">
                                 <button type="submit">Logout</button>
                             </form>
