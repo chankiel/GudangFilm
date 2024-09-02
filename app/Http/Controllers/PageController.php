@@ -72,14 +72,14 @@ class PageController extends Controller
     {
         $authed = AuthController::check($request);
         $filmQuery = $authed->bought();
-        $films = $this->handleQuery($request,$filmQuery,5);
+        $films = $this->handleQuery($request,$filmQuery,6);
         return view('filmsList', ['films' => $films, 'authed' => $authed, 'title' => "My Films"]);
     }
 
     public function wishlist(Request $request){
         $authed = AuthController::check($request);
         $filmQuery = $authed->wishlist();
-        $films = $this->handleQuery($request,$filmQuery,5);
+        $films = $this->handleQuery($request,$filmQuery,6);
         return view('filmsList', ['films' => $films, 'authed' => $authed, 'title' => "WishList"]);
     }
 
