@@ -3,7 +3,7 @@
         @foreach ($films as $film)
             <a href="/films/{{ $film->slug }}"
                 class="transition-transform duration-300 ease-in-out transform hover:scale-90 p-3 box-bordertext-white 
-                flex flex-col justify-start items-center bg-blue-950 rounded-xl hover:bg-midBlue md:w-auto w-36 xl:w-52 xl:h-[380px] shadow-blue-950 shadow-lg">
+                flex flex-col justify-start items-center bg-blue-950 rounded-xl hover:bg-midBlue md:w-auto w-36 xl:w-52 xl:h-[330px] shadow-blue-950 shadow-lg">
                 <div class="w-full h-3/4 aspect-[4/6] overflow-hidden">
                     <img class="w-full h-full object-cover"
                         src={{ $film->cover_image_url ?? asset('gudangfilm-logo.png') }} alt={{ $film->title }}>
