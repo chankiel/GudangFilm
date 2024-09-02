@@ -38,7 +38,7 @@
                                     WishList</button>
                             </form>
                         @else
-                            <form action="{{ url('unwish-film/' . $film->id) }}" method="DELETE" class="w-1/2">
+                            <form action="{{ url('unwish-film/' . $film->id) }}" method="POST" class="w-1/2">
                                 @csrf
                                 <button class="rounded-2xl w-full p-4 border-4 font-bold bg-red-600 text-white">Remove
                                     from
@@ -47,7 +47,8 @@
                         @endif
                     </div>
                     @if (session('error'))
-                        <div class="text-red-500 w-full error h-5" id="error-user">{{ session('error') }}</div>
+                        <div class="text-red-500 w-full error h-5 hidden md:block" id="error-user">
+                            {{ session('error') }}</div>
                     @endif
                     <div class="hidden gap-3 mt-3 md:flex">
                         <h1 class="flex justify-center items-center text-2xl bg-gray-700 rounded-2xl w-12">
@@ -72,8 +73,8 @@
                     {{ $avg_rating ?? 0 }}</h1>
                 <div class="cursor-pointer w-1/3">
                     @for ($i = 1; $i <= 5; $i++)
-                        <form action="{{ url('rate-film/' . $film->id . '/' . $i) }}" method="POST" class="inline-block"
-                            id="star-{{ $i }}">
+                        <form action="{{ url('rate-film/' . $film->id . '/' . $i) }}" method="POST"
+                            class="inline-block" id="star-{{ $i }}">
                             @csrf
                             <button class="fa fa-star w-3" type="submit" {{ !$bought ? 'disabled' : '' }}
                                 aria-label="Star Rating {{ $i }}"></button>
@@ -87,13 +88,9 @@
                 @if (!$bought)
                     <form action="{{ url('buy-film/' . $film->id) }}" method="POST" class="w-1/2">
                         @csrf
-                        <button class="rounded-2xl w-full p-4 border-4 font-bold bg-orange-400 text-darkOcean">Buy
+                        <button class="rounded-2xl w-full h-full p-4 border-4 font-bold bg-orange-400 text-darkOcean">Buy
                             Film</button>
                     </form>
-                    @if (session('error'))
-                        <div class="text-red-500 w-full error h-5" id="error-user">{{ session('error') }}</div>
-                    @endif
-                @else
                 @endif
                 @if (!$wished)
                     <form action="{{ url('wish-film/' . $film->id) }}" method="POST" class="w-1/2">
@@ -112,7 +109,10 @@
                     </form>
                 @endif
             </div>
-            <h3 class="text-gray-300 text-sm">Description</h3>
+            @if (session('error'))
+                <div class="text-red-500 w-full block md:hidden text-sm my-1" id="error-user">{{ session('error') }}</div>
+            @endif
+            <h3 class="text-gray-300 text-sm mt-2">Description</h3>
             <p class="text-sm md:text-base">{{ $film->description }}</p>
             <h3 class="mt-3 text-sm text-gray-300">Director</h3>
             <p>{{ $film->director }}</p>
@@ -133,9 +133,14 @@
                 </div>
             </form>
             <div class="border-b">{{ $commentsCount }} Comments</div>
-            @foreach ($comments as $comment)
-                <x-comment :comment="$comment"></x-comment>
-            @endforeach
+            @if ($comments->isEmpty())
+                <h2 class="text-center mt-10">No one commented yet</h2>
+                <h1 class="text-center text-xl font-semibold mb-10">Be The First to Comment!</h1>
+            @else
+                @foreach ($comments as $comment)
+                    <x-comment :comment="$comment" :authed="$authed"></x-comment>
+                @endforeach
+            @endif
         </div>
     </div>
 

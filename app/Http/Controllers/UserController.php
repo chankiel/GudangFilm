@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Film;
+use App\Models\Comment;
 use App\Models\User;
 use App\Helpers\JSONHelper;
 use Illuminate\Http\Request;
@@ -183,6 +184,19 @@ class UserController extends Controller
                 'updated_at' => $now,
             ]
         ]);
+
+        return redirect()->back();
+    }
+
+    public function uncommentFilm(Request $request, Comment $comment)
+    {
+        $user = AuthController::check($request);
+
+        if (!$comment) {
+            return redirect()->back()->with('error', 'Film not found.');
+        }
+
+        $comment->delete();
 
         return redirect()->back();
     }
