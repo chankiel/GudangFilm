@@ -197,6 +197,21 @@ Pola query builder Laravel memungkinkan konstruksi query SQL dengan cara yang la
 ### B06 - Responsive Layout
 Aplikasi ini sudah dibuat responsive sesuai dengan ukuran layar perangkat pengguna
 
+### B05 - Lighthouse
+`Google Lighthouse` is an open-source automated tool developed by Google to audit or measure the quality of web applications. This tool aids web developers in improving their projects.
+#### Home Page ("/")
+![Screenshot (2364)](./images/home.png)
+#### Film Detail Page ("/{film-slug}")
+![Screenshot (2365)](./images/filmDetail.png)
+#### My Films Page ("/myfilms")
+![Screenshot (2366)](./images/myfilms.png)
+#### Wishlist Page ("/wishlist")
+![Screenshot (2367)](./images/wishlist.png)
+#### Login Page ("/login")
+![Screenshot (2368)](./images/login.png)
+#### Register Page ("/register")
+![Screenshot (2363)](./images/register.png)
+
 ### B08 - SOLID
 Aplikasi ini menggunakan konsep SOLID dalam pembuatan design class. Beberapa class pada project ini adalah sebagai berikut.
 
